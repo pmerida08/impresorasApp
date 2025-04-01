@@ -16,11 +16,12 @@
                                 {{ __('Impresoras') }}
                             </span>
 
-                             <div class="float-right">
-                                <a href="{{ route('impresoras.create') }}" class="btn btn-primary btn-sm float-right"  data-placement="left">
-                                  {{ __('Create New') }}
+                            {{-- <div class="float-right">
+                                <a href="{{ route('impresoras.create') }}" class="btn btn-primary btn-sm float-right"
+                                    data-placement="left">
+                                    {{ __('Añadir impresora') }}
                                 </a>
-                              </div>
+                            </div> --}}
                         </div>
                     </div>
                     @if ($message = Session::get('success'))
@@ -35,9 +36,11 @@
                                 <thead class="thead">
                                     <tr>
                                         <th>No</th>
-                                        
-									<th >Modelo</th>
-									<th >Fotocopias</th>
+
+                                        <th>Modelo</th>
+                                        <th>Copias por día</th>
+                                        <th>Copias por mes</th>
+                                        <th>Copias por año</th>
 
                                         <th></th>
                                     </tr>
@@ -46,17 +49,22 @@
                                     @foreach ($impresoras as $impresora)
                                         <tr>
                                             <td>{{ ++$i }}</td>
-                                            
-										<td >{{ $impresora->modelo }}</td>
-										<td >{{ $impresora->fotocopias }}</td>
+
+                                            <td>{{ $impresora->modelo }}</td>
+                                            <td>{{ $impresora->copias_dia }}</td>
+                                            <td>{{ $impresora->copias_mes }}</td>
+                                            <td>{{ $impresora->copias_anio }}</td>
 
                                             <td>
-                                                <form action="{{ route('impresoras.destroy', $impresora->id) }}" method="POST">
-                                                    <a class="btn btn-sm btn-primary " href="{{ route('impresoras.show', $impresora->id) }}"><i class="fa fa-fw fa-eye"></i> {{ __('Show') }}</a>
-                                                    <a class="btn btn-sm btn-success" href="{{ route('impresoras.edit', $impresora->id) }}"><i class="fa fa-fw fa-edit"></i> {{ __('Edit') }}</a>
+                                                <form action="{{ route('impresoras.destroy', $impresora->id) }}"
+                                                    method="POST">
+                                                    {{-- <a class="btn btn-sm btn-primary " href="{{ route('impresoras.show', $impresora->id) }}"><i class="fa fa-fw fa-eye"></i> {{ __('Ver') }}</a>
+                                                    <a class="btn btn-sm btn-success" href="{{ route('impresoras.edit', $impresora->id) }}"><i class="fa fa-fw fa-edit"></i> {{ __('Editar') }}</a> --}}
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm" onclick="event.preventDefault(); confirm('Are you sure to delete?') ? this.closest('form').submit() : false;"><i class="fa fa-fw fa-trash"></i> {{ __('Delete') }}</button>
+                                                    <button type="submit" class="btn btn-danger btn-sm"
+                                                        onclick="event.preventDefault(); confirm('¿Estás seguro que quieres eliminar esta impresora?') ? this.closest('form').submit() : false;"><i
+                                                            class="fa fa-fw fa-trash"></i> {{ __('Eliminar') }}</button>
                                                 </form>
                                             </td>
                                         </tr>

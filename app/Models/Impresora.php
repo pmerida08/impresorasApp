@@ -9,7 +9,9 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property $id
  * @property $modelo
- * @property $fotocopias
+ * @property $copias_dia
+ * @property $copias_mes
+ * @property $copias_anio
  * @property $created_at
  * @property $updated_at
  *
@@ -26,7 +28,7 @@ class Impresora extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = ['modelo', 'fotocopias'];
+    protected $fillable = ['modelo', 'copias_dia', 'copias_mes', 'copias_anio'];
 
 
 }

@@ -14,7 +14,10 @@
                         </div>
                     @endif
 
-                    {{ __('You are logged in!') }}
+                    {{ __('Has iniciado sesión') }} 
+                    <div class="btn">
+                    <a href="{{ route('impresoras.index') }}" class="btn btn-primary ml-2">Ver Impresoras</a>
+                    </div>
                 </div>
             </div>
         </div>
