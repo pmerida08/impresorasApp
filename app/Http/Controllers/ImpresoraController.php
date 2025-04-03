@@ -93,4 +93,9 @@ class ImpresoraController extends Controller
         return Redirect::route('impresoras.index')
             ->with('success', 'Impresora deleted successfully');
     }
+
+    public function test()
+    {
+        return view('impresora.test');
+    }
 }

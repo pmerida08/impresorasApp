@@ -12,4 +12,5 @@ Route::get('/impresoras/buscar', [ImpresoraController::class, 'buscar'])->name('
 
 Route::resource('impresoras', ImpresoraController::class);
 // Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/test', [ImpresoraController::class, 'test']);
 Auth::routes();
