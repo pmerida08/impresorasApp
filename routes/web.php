@@ -4,11 +4,12 @@ use App\Http\Controllers\ImpresoraController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
-Route::get('/home', function () {
+Route::get('/', function () {
     return view('home');
 });
 
-Route::resource('impresoras', ImpresoraController::class);
+Route::get('/impresoras/buscar', [ImpresoraController::class, 'buscar'])->name('impresoras.buscar');
 
+Route::resource('impresoras', ImpresoraController::class);
 // Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Auth::routes();

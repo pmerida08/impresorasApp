@@ -74,6 +74,18 @@ class ImpresoraController extends Controller
             ->with('success', 'Impresora updated successfully');
     }
 
+    public function buscar(Request $request)
+    {
+        $query = $request->input('q');
+        $sanitizedQuery = str_replace('%', '', $query);
+
+        $impresoras = Impresora::where('modelo', 'LIKE', '%' . $sanitizedQuery . '%')
+            ->select('id', 'modelo', 'copias_dia', 'copias_mes', 'copias_anio')
+            ->get();
+
+        return response()->json($impresoras);
+    }
+
     public function destroy($id): RedirectResponse
     {
         Impresora::find($id)->delete();
