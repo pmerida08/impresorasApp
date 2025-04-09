@@ -22,8 +22,14 @@ class ImpresoraRequest extends FormRequest
     public function rules(): array
     {
         return [
-			'modelo' => 'required|string',
-			'fotocopias' => 'required',
+            'tipo' => 'nullable|string|max:255',
+            'ubicacion' => 'nullable|string|max:255',
+            'usuario' => 'nullable|string|max:255',
+            'ip' => 'nullable|ip',
+            'nombre_reserva_dhcp' => 'nullable|string|max:255',
+            'observaciones' => 'nullable|string|max:255',
+            'nombre_cola_hacos' => 'nullable|string|max:255',
         ];
     }
+
 }

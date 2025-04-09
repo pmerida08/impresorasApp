@@ -16,10 +16,11 @@ class ImpresoraController extends Controller
      */
     public function index(Request $request): View
     {
-        $impresoras = Impresora::paginate();
+        $impresoras = Impresora::paginate(10);
 
         return view('impresora.index', compact('impresoras'))
-            ->with('i', ($request->input('page', 1) - 1) * $impresoras->perPage());
+            ->with('i', ($request->input('page', 1) - 1) * $impresoras->perPage())
+            ->with('pagination', 'pagination::tailwind');
     }
 
     /**
@@ -79,8 +80,10 @@ class ImpresoraController extends Controller
         $query = $request->input('q');
         $sanitizedQuery = str_replace('%', '', $query);
 
-        $impresoras = Impresora::where('modelo', 'LIKE', '%' . $sanitizedQuery . '%')
-            ->select('id', 'modelo', 'copias_dia', 'copias_mes', 'copias_anio')
+        $impresoras = Impresora::where('tipo', 'LIKE', '%' . $sanitizedQuery . '%')
+            ->orWhere('ubicacion', 'LIKE', '%' . $sanitizedQuery . '%')
+            ->orWhere('usuario', 'LIKE', '%' . $sanitizedQuery . '%')
+            ->select('id', 'tipo', 'ubicacion', 'usuario', 'nombre_reserva_dhcp', 'observaciones', 'nombre_cola_hacos')
             ->get();
 
         return response()->json($impresoras);
