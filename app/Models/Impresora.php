@@ -47,121 +47,111 @@ class Impresora extends Model
         return $this->hasMany(ImpresoraHistorico::class);
     }
 
+
     public function getModeloAttribute()
     {
         $host = $this->attributes['ip'];
-
         $community = "public"; // Comunidad SNMP (por defecto suele ser "public")
-
         $oid = ".1.3.6.1.2.1.25.3.2.1.3.1";
 
-        // Consultar SNMP
-        $model = snmpget($host, $community, $oid);
-        
-        return substr(explode(":", $model)[1], 2, -1);
+        try {
+            // Consultar SNMP
+            $model = @snmpget($host, $community, $oid);
+
+            // Verificar si no hay respuesta o la respuesta es inválida
+            if ($model === false) {
+                return "No responde"; // Retorna un mensaje si no hay respuesta
+            }
+
+            return substr(explode(":", $model)[1], 2, -1); // Retorna el modelo de la impresora
+        } catch (\Exception $e) {
+            return "Error SNMP"; // En caso de excepciones, retorna un mensaje de error
+        }
     }
+
     public function getPaginasTotalAttribute()
     {
         $host = $this->attributes['ip'];
-
         $community = "public"; // Comunidad SNMP (por defecto suele ser "public")
-
         $oid = ".1.3.6.1.2.1.43.10.2.1.4.1.1";
 
-        // Consultar SNMP
-        $model = snmpget($host, $community, $oid);
-        return explode(":", $model)[1];
+        try {
+            // Consultar SNMP
+            $model = @snmpget($host, $community, $oid);
+
+            // Verificar si no hay respuesta o la respuesta es inválida
+            if ($model === false) {
+                return 0; // Retorna 0 si no hay respuesta
+            }
+
+            return explode(":", $model)[1]; // Retorna el número total de páginas
+        } catch (\Exception $e) {
+            return 0; // Retorna 0 en caso de error de SNMP
+        }
     }
+
 
     public function getNumSerieAttribute()
     {
         $host = $this->attributes['ip'];
-
         $community = "public"; // Comunidad SNMP (por defecto suele ser "public")
-
         $oid = ".1.3.6.1.2.1.43.5.1.1.17.1";
 
-        // Consultar SNMP
-        $model = snmpget($host, $community, $oid);
-        return substr(explode(":", $model)[1], 2, -1);
+        try {
+            // Consultar SNMP
+            $model = @snmpget($host, $community, $oid);
+
+            // Verificar si no hay respuesta o la respuesta es inválida
+            if ($model === false) {
+                return "No responde"; // Retorna un mensaje si no hay respuesta
+            }
+
+            return substr(explode(":", $model)[1], 2, -1); // Retorna el número de serie
+        } catch (\Exception $e) {
+            return "Error SNMP"; // Retorna un mensaje en caso de error
+        }
     }
     public function getMacAttribute()
     {
         $host = $this->attributes['ip'];
-
         $community = "public"; // Comunidad SNMP (por defecto suele ser "public")
 
-        $oid = ".1.3.6.1.2.1.2.2.1.6.1";
+        // Lista de posibles interfaces para consultar la MAC
+        $oids = [
+            ".1.3.6.1.2.1.2.2.1.6.1",
+            ".1.3.6.1.2.1.2.2.1.6.2",
+            ".1.3.6.1.2.1.2.2.1.6.3",
+        ];
 
-        // Consultar SNMP
-        $result = snmpget($host, $community, $oid);
-        return explode(":",$result)[1];
+        try {
+            foreach ($oids as $oid) {
+                $snmpResult = @snmpget($host, $community, $oid);
+
+                // Verificar si no hay respuesta de SNMP
+                if (!$snmpResult) {
+                    continue; // Intenta con el siguiente OID
+                }
+
+                // Extraer la parte con la MAC address (después de "STRING:")
+                $parts = explode(":", $snmpResult, 2);
+                if (count($parts) < 2) {
+                    continue; // Formato inesperado
+                }
+
+                // Limpiar y formatear la MAC address
+                $rawMac = trim($parts[1]);
+                $macParts = array_filter(array_map('trim', explode(' ', $rawMac)));
+                $formattedMac = strtoupper(implode(':', $macParts));
+
+                if (!empty($formattedMac)) {
+                    return $formattedMac;
+                }
+            }
+
+            return "No responde"; // Si no se encuentra una MAC válida
+        } catch (\Exception $e) {
+            return "Error SNMP"; // En caso de excepción, retornar un mensaje de error
+        }
     }
 
-    // public function getTonerAttribute(){
-    //     $host = $this->attributes['ip'];
-
-    //     $community = "public"; // Comunidad SNMP (por defecto suele ser "public")
-
-    //     $oid = ".1.3.6.1.2.1.43.11.1.1.6.1.1";
-
-    //     // Consultar SNMP
-    //     $toner = snmpget($host, $community, $oid);
-    //     return explode(":", $toner)[1];
-    // }
-
-    // public function getUnidadImgAttribute(){
-    //     $host = $this->attributes['ip'];
-
-    //     $community = "public"; // Comunidad SNMP (por defecto suele ser "public")
-
-    //     $oid = ".1.3.6.1.2.1.43.11.1.1.6.1.2";
-
-    //     // Consultar SNMP
-    //     $unidadImg = snmpget($host, $community, $oid);
-    //     return explode(":", $unidadImg)[1];
-    // }
-    // public function getPaginasRestantesTonerAttribute(){
-    //     $host = $this->attributes['ip'];
-
-    //     $community = "public"; // Comunidad SNMP (por defecto suele ser "public")
-
-    //     $oid = ".1.3.6.1.2.1.43.11.1.1.9.1.1";
-
-    //     $pagRest = snmpget($host, $community, $oid);
-    //     return explode(":", $pagRest)[1];
-    // }
-
-    // public function getPaginasRestantesUnidadImgAttribute(){
-    //     $host = $this->attributes['ip'];
-
-    //     $community = "public"; // Comunidad SNMP (por defecto suele ser "public")
-
-    //     $oid = ".1.3.6.1.2.1.43.11.1.1.9.1.2";
-
-    //     $pagRest = snmpget($host, $community, $oid);
-    //     return explode(":", $pagRest)[1];
-    // }
-
-    // public function getAlertAttribute(){
-    //     $host = $this->attributes['ip'];
-
-    //     $community = "public"; // Comunidad SNMP (por defecto suele ser "public")
-
-    //     $oid = ".1.3.6.1.2.1.43.18.1.1.8";
-
-    //     $alert = snmpget($host, $community, $oid);
-    //     return explode(":", $alert)[1];
-    // }
-
-    // public function getNumSerieAttribute(){
-    //     $host = $this->attributes['ip'];
-
-    //     $community = "public"; // Comunidad SNMP (por defecto suele ser "public")
-
-    //     $oid = ".1.3.6.1.2.1.43.5.1.1.17";
-
-    //     $numSerie = snmpget($host, $community, $oid);
-    //     return explode(":", $numSerie)[1];
-    // }
 }

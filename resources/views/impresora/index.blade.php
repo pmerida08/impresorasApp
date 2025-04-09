@@ -82,7 +82,7 @@
 
                         {{-- Paginación --}}
                         <div class="pagination-container">
-                            {!! $impresoras->withQueryString()->links('pagination::tailwind') !!}
+                            {!! $impresoras->withQueryString()->links('pagination::bootstrap-5') !!}
                         </div>
 
                     </div>

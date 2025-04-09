@@ -16,11 +16,11 @@ class ImpresoraController extends Controller
      */
     public function index(Request $request): View
     {
-        $impresoras = Impresora::paginate(10);
+        $impresoras = Impresora::paginate(15);
 
         return view('impresora.index', compact('impresoras'))
             ->with('i', ($request->input('page', 1) - 1) * $impresoras->perPage())
-            ->with('pagination', 'pagination::tailwind');
+            ->with('pagination', 'pagination::bootstrap-5');
     }
 
     /**

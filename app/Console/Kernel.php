@@ -9,14 +9,14 @@ class Kernel extends ConsoleKernel
 {
     protected function schedule(Schedule $schedule)
     {
-        // Aquí programas tus tareas
-        $schedule->command('impresora:obtener-contador')->daily();
-        $schedule->command('impresoras:registrar-historico')->dailyAt('00:30');
+        // Ejecutar el comando cada día a medianoche
+        $schedule->command('impresoras:actualizar_paginas')->daily();
     }
+
 
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }
