@@ -24,7 +24,7 @@ class ActualizarPaginasImpresoras extends Command
 
         foreach ($impresoras as $impresora) {
             // Aquí puedes utilizar SNMP o lo que sea que uses para obtener el número de páginas
-            $paginasActuales = $impresora->getPaginasTotalAttribute(); // O la función que tengas para obtener las páginas
+            $paginasActuales = intval($impresora->getPaginasTotalAttribute()); // O la función que tengas para obtener las páginas
 
             // Verificar si ya existe un histórico para ese día
             $historico = ImpresoraHistorico::where('impresora_id', $impresora->id)

@@ -60,7 +60,7 @@
                                                     method="POST">
                                                     <a href="{{ route('impresoras.show', $impresora->id) }}"
                                                         class="btn btn-primary btn-sm">
-                                                        <i class="fa fa-fw fa-eye"></i> {{ __('Ver') }}
+                                                        <i class="fa fa-fw fa-eye"></i> {{ __('Ver detalles') }}
                                                     </a>
                                                     <a href="{{ route('impresoras.edit', $impresora->id) }}"
                                                         class="btn btn-success btn-sm">

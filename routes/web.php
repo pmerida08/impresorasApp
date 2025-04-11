@@ -17,5 +17,8 @@ Route::resource('impresoras', ImpresoraController::class);
 
 Route::get('/test', [ImpresoraController::class, 'test']);
 Route::get('/impresoras/{id}/historico', [ImpresoraHistoricoController::class, 'mostrar'])->name('impresoras.historico');
+Route::get('/impresoras/{id}/historico', [ImpresoraHistoricoController::class, 'mostrar'])->name('impresoras.historico');
+Route::get('/impresoras/{id}/paginas-rango', [ImpresoraHistoricoController::class, 'mostrarPaginasEnRango'])->name('impresoras.paginas.rango');
+
 
 Auth::routes();
