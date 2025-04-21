@@ -14,7 +14,7 @@
                         </div>
                     @endif
 
-                    {{ __('Has iniciado sesión') }} 
+                    {{-- {{ __('Has iniciado sesión') }}  --}}
                     <div class="btn">
                     <a href="{{ route('impresoras.index') }}" class="btn btn-primary ml-2">Ver Impresoras</a>
                     </div>
