@@ -63,7 +63,7 @@
                                                         <i class="fa fa-fw fa-eye"></i> {{ __('Ver detalles') }}
                                                     </a>
                                                     <a href="{{ route('impresoras.edit', $impresora->id) }}"
-                                                        class="btn btn-success btn-sm">
+                                                        class="btn btn-secondary btn-sm">
                                                         <i class="fa fa-fw fa-edit"></i> {{ __('Editar') }}
                                                     </a>
                                                     @csrf

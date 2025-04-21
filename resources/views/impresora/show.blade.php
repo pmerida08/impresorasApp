@@ -29,6 +29,14 @@
                             <strong>Páginas impresas en total:</strong>
                             {{ $impresora->paginastotal }}
                         </div>
+                        <div class="form-group mb-2 mb20">
+                            <strong>Páginas impresas en blanco y negro:</strong>
+                            {{ $impresora->paginasbw }}
+                        </div>
+                        <div class="form-group mb-2 mb20">
+                            <strong>Páginas impresas en color:</strong>
+                            {{ $impresora->paginascolor }}
+                        </div>
 
                         <div class="form-group mb-2 mb20">
                             <strong>Número de serie:</strong>

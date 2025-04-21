@@ -89,6 +89,48 @@ class Impresora extends Model
             return 0; // Retorna 0 en caso de error de SNMP
         }
     }
+    public function getPaginasBWAttribute()
+    {
+        $host = $this->attributes['ip'];
+        $community = "public"; // Comunidad SNMP (por defecto suele ser "public")
+        $oid = ".1.3.6.1.4.1.11.2.3.9.4.2.1.4.1.2.6.0";
+
+        try {
+            // Consultar SNMP
+            $model = @snmpget($host, $community, $oid);
+
+            // Verificar si no hay respuesta o la respuesta es inválida
+            if ($model === false) {
+                return 0; // Retorna 0 si no hay respuesta
+            }
+
+            return explode(":", $model)[1]; // Retorna el número total de páginas monocromo
+        } catch (\Exception $e) {
+            return 0; // Retorna 0 en caso de error de SNMP
+        }
+    }
+
+    public function getPaginasColorAttribute()
+    {
+        $host = $this->attributes['ip'];
+        $community = "public"; // Comunidad SNMP (por defecto suele ser "public")
+        $oid = ".1.3.6.1.4.1.11.2.3.9.4.2.1.4.1.2.7.0";
+
+        try {
+            // Consultar SNMP
+            $model = @snmpget($host, $community, $oid);
+
+            // Verificar si no hay respuesta o la respuesta es inválida
+            if ($model === false) {
+                return 0; // Retorna 0 si no hay respuesta
+            }
+
+            return explode(":", $model)[1]; // Retorna el número total de páginas monocromo
+        } catch (\Exception $e) {
+            return 0; // Retorna 0 en caso de error de SNMP
+        }
+    }
+    
 
 
     public function getNumSerieAttribute()
