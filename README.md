@@ -99,6 +99,7 @@ resources/
 git clone https://github.com/pmerida08/impresorasCrud.git
 cd impresorasCrud
 composer install
+npm install
 cp .env.example .env
 php artisan key:generate
 # Configura la base de datos en .env
