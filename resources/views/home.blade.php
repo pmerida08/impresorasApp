@@ -16,7 +16,13 @@
 
                     {{-- {{ __('Has iniciado sesión') }}  --}}
                     <div class="btn">
-                    <a href="{{ route('impresoras.index') }}" class="btn btn-primary ml-2">Ver Impresoras</a>
+                        <a href="{{ route('impresoras.index') }}" class="btn btn-primary ml-2">Ver Impresoras</a>
+                    </div>
+                    
+                    <div class="btn">
+                        <a href="{{ route('estadisticas.totales-por-mes') }}" class="btn btn-primary">
+                            <i class="fas fa-chart-bar"></i> Ver Estadísticas Mensuales
+                        </a>
                     </div>
                 </div>
             </div>
