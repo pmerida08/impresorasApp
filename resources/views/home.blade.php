@@ -6,7 +6,7 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">{{ __('Dashboard') }}</h5>
+                    <h5 class="mb-0">Panel Principal</h5>
                 </div>
 
                 <div class="card-body">
