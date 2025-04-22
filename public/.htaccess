@@ -22,4 +22,10 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^ index.php [L]
+
+    # Bloquear acceso por IP
+    RewriteEngine On
+    RewriteCond %{HTTP_HOST} ^\d+\.\d+\.\d+\.\d+$
+    RewriteRule ^ - [F]
+
 </IfModule>
