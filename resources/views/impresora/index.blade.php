@@ -35,7 +35,6 @@
                             <table class="table table-striped table-hover">
                                 <thead class="thead">
                                     <tr>
-                                        <th>No</th>
                                         <th>Tipo</th>
                                         <th>Ubicación</th>
                                         <th>Usuario</th>
@@ -48,7 +47,6 @@
                                 <tbody>
                                     @foreach ($impresoras as $index => $impresora)
                                         <tr>
-                                            <td>{{ $loop->iteration }}</td>
                                             <td>{{ $impresora->tipo }}</td>
                                             <td>{{ $impresora->ubicacion }}</td>
                                             <td>{{ $impresora->usuario }}</td>
