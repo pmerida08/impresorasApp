@@ -143,9 +143,6 @@ DB_PASSWORD=tu_contraseña
 ```
 
 Nota: Si utilizas la Opción B (importar la base de datos), no necesitas ejecutar las migraciones ya que la estructura de la base de datos se importará junto con los datos.
-```
-
----
 
 ## ⚙️ Configuración
 
