@@ -15,25 +15,25 @@ Aplicación web desarrollada en **Laravel** con motor de plantillas **Blade**, q
 
 ## 🚀 Características principales
 
-- Gestión CRUD de impresoras (modelo, IP, ubicación, etc.).
-- Conexión SNMP a impresoras para recuperar información como:
-  - Total de páginas impresas
-  - Modelo
-  - Número de serie
-  - Dirección MAC
-- Almacenamiento histórico de páginas impresas por día.
-- Visualización gráfica mensual de páginas impresas.
-- Automatización mediante **cron job** para actualizar datos diariamente.
+-   Gestión CRUD de impresoras (modelo, IP, ubicación, etc.).
+-   Conexión SNMP a impresoras para recuperar información como:
+    -   Total de páginas impresas
+    -   Modelo
+    -   Número de serie
+    -   Dirección MAC
+-   Almacenamiento histórico de páginas impresas por día.
+-   Visualización gráfica mensual de páginas impresas.
+-   Automatización mediante **cron job** para actualizar datos diariamente.
 
 ---
 
 ## 🧱 Tecnologías utilizadas
 
-- ⚙️ **Laravel** (framework backend)
-- 🎨 **Blade** (motor de plantillas)
-- 🖧 **SNMP** (consulta de datos de red)
-- 📈 **Chart.js** (gráficos interactivos)
-- 🕒 **Scheduler de Laravel** + **cron job** (automatización diaria)
+-   ⚙️ **Laravel** (framework backend)
+-   🎨 **Blade** (motor de plantillas)
+-   🖧 **SNMP** (consulta de datos de red)
+-   📈 **Chart.js** (gráficos interactivos)
+-   🕒 **Scheduler de Laravel** + **cron job** (automatización diaria)
 
 ---
 
@@ -43,11 +43,54 @@ La aplicación muestra un **gráfico de barras** con las páginas impresas por c
 
 ---
 
-## ⚙️ Configuración del cron job
+## ⚙️ Configuración
+
+### **Apache**
+
+Para la visualización del proyecto, necesitaremos **Apache** en tu servidor.
+
+#### 📝 Pasos:
+
+1. Abre el archivo /etc/hosts (Linux) y añade:
+
+```bash
+127.0.0.1 tudominio.test
+# o
+IP_DEL_SERVIDOR tudominio.test
+# Este dominio es un ejemplo, sustitúyelo por el que quieras
+```
+
+2. Crea el archivo /etc/apache2/sites-available/tudominio.conf
+
+```bash
+<VirtualHost *:80>
+    ServerName tudominio.test
+    DocumentRoot /var/www/html/impresorasCrud/public
+
+    <Directory /var/www/html/impresorasCrud/public>
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+    ErrorLog ${APACHE_LOG_DIR}/tudominio_error.log
+    CustomLog ${APACHE_LOG_DIR}/tudominio_access.log combined
+</VirtualHost>
+```
+
+3. Habilita el sitio y el módulo rewrite
+
+```bash
+sudo a2ensite miapp.conf
+sudo a2enmod rewrite
+sudo systemctl restart apache2
+```
+
+### **Cron job**
 
 Para que la aplicación actualice automáticamente el número de páginas impresas diariamente, debes configurar un **cron job** en tu servidor.
 
-### 📝 Pasos:
+#### 📝 Pasos:
 
 1. Abre el archivo de cron con el siguiente comando:
 
@@ -82,24 +125,26 @@ resources/
 
 ## 🛠️ Requisitos
 
-- PHP 8.x
+-   PHP 8.x
 
-- Laravel 10.x
+-   Laravel 10.x
 
-- SNMP habilitado en el servidor
+-   SNMP habilitado en el servidor
 
-- MySQL o equivalente
+-   MySQL o equivalente
 
-- Composer
+-   Composer
 
 ## 📦 Instalación
 
 ```bash
-
+cd /var/www/html/
 git clone https://github.com/pmerida08/impresorasCrud.git
 cd impresorasCrud
 composer install
 npm install
+sudo chown -R www-data:www-data /var/www/html/impresorasCrud
+sudo chmod -R 775 storage bootstrap/cache
 cp .env.example .env
 php artisan key:generate
 # Configura la base de datos en .env
