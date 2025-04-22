@@ -131,8 +131,9 @@ php artisan migrate
 5. Hacer clic en "Seleccionar archivo" y elegir el archivo `impresorasproyecto.sql` del proyecto
 6. Clic en "Continuar" o "Go" para realizar la importación
 
-7. Configurar el archivo .env con los datos de acceso:
-```env
+7. Configurar el archivo **.env** con los datos de acceso:
+
+```bash
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
