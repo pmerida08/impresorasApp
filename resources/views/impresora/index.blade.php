@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-    <div class="container-fluid">
+    <div class="container-fluid px-4">
         <div class="row">
             <div class="col-sm-12">
                 <div class="card">
@@ -17,7 +17,14 @@
                             <span id="card_title">
                                 {{ __('Impresoras') }}
                             </span>
-                            <a href="{{ route('impresoras.create') }}" class="btn btn-primary btn-sm">Añadir impresora</a>
+
+                            <div>
+
+                                <a href="{{ route('impresoras.create') }}" class="btn btn-primary">Añadir impresora</a>
+                                {{-- <a href="{{ route('impresoras.importar.mostrar') }}" class="btn btn-success">
+                                    <i class="fas fa-file-import"></i> Importar CSV
+                                </a> --}}
+                            </div>
                         </div>
 
 
@@ -32,16 +39,47 @@
 
                     <div class="card-body bg-white">
                         <div class="table-responsive">
-                            <table class="table table-striped table-hover">
+                            <table class="table table-striped table-hover w-100">
+                                <colgroup>
+                                    <col style="width: 15%">
+                                    <col style="width: 15%">
+                                    <col style="width: 15%">
+                                    <col style="width: 12%">
+                                    <col style="width: 12%">
+                                    <col style="width: 8%">
+                                    <col style="width: 23%">
+                                </colgroup>
                                 <thead class="thead">
+                                    <style>
+                                        .table td,
+                                        .table th {
+                                            padding: 1rem 1.5rem;
+                                        }
+
+                                        .table td {
+                                            white-space: nowrap;
+                                        }
+
+                                        .table {
+                                            margin-bottom: 0;
+                                        }
+
+                                        .table td:last-child {
+                                            text-align: right;
+                                        }
+
+                                        .table th:last-child {
+                                            text-align: right;
+                                        }
+                                    </style>
                                     <tr>
-                                        <th>Tipo</th>
-                                        <th>Ubicación</th>
-                                        <th>Usuario</th>
-                                        <th>Observaciones</th>
-                                        <th>Nombre Reserva DHCP</th>
-                                        <th>Nombre Cola HACOS</th>
-                                        <th>Acciones</th>
+                                        <th class="px-3">Tipo</th>
+                                        <th class="px-3">Ubicación</th>
+                                        <th class="px-3">Usuario</th>
+                                        <th class="px-3">Sede</th>
+                                        <th class="px-3">Nº Contrato</th>
+                                        <th class="px-3">Color</th>
+                                        <th class="px-3">Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -50,9 +88,9 @@
                                             <td>{{ $impresora->tipo }}</td>
                                             <td>{{ $impresora->ubicacion }}</td>
                                             <td>{{ $impresora->usuario }}</td>
-                                            <td>{{ $impresora->observaciones }}</td>
-                                            <td>{{ $impresora->nombre_reserva_dhcp }}</td>
-                                            <td>{{ $impresora->nombre_cola_hacos }}</td>
+                                            <td>{{ $impresora->sede }}</td>
+                                            <td>{{ $impresora->num_contrato }}</td>
+                                            <td>{{ $impresora->color ? 'Sí' : 'No' }}</td>
                                             <td>
                                                 <form action="{{ route('impresoras.destroy', $impresora->id) }}"
                                                     method="POST">

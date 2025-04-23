@@ -41,7 +41,7 @@ class ImpresoraController extends Controller
         Impresora::create($request->validated());
 
         return Redirect::route('impresoras.index')
-            ->with('success', 'Impresora created successfully.');
+            ->with('success', 'Impresora creada correctamente.');
     }
 
     /**
@@ -72,7 +72,7 @@ class ImpresoraController extends Controller
         $impresora->update($request->validated());
 
         return Redirect::route('impresoras.index')
-            ->with('success', 'Impresora updated successfully');
+            ->with('success', 'Impresora actualizada correctamente.');
     }
 
     public function buscar(Request $request)
@@ -83,7 +83,7 @@ class ImpresoraController extends Controller
         $impresoras = Impresora::where('tipo', 'LIKE', '%' . $sanitizedQuery . '%')
             ->orWhere('ubicacion', 'LIKE', '%' . $sanitizedQuery . '%')
             ->orWhere('usuario', 'LIKE', '%' . $sanitizedQuery . '%')
-            ->select('id', 'tipo', 'ubicacion', 'usuario', 'nombre_reserva_dhcp', 'observaciones', 'nombre_cola_hacos')
+            ->select('id', 'tipo', 'ubicacion', 'usuario')
             ->get();
 
         return response()->json($impresoras);
@@ -94,7 +94,7 @@ class ImpresoraController extends Controller
         Impresora::find($id)->delete();
 
         return Redirect::route('impresoras.index')
-            ->with('success', 'Impresora deleted successfully');
+            ->with('success', 'Impresora borrada correctamente.');
     }
 
     public function test()

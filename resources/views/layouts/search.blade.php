@@ -8,16 +8,47 @@
     <div id="noResults" class="alert alert-info" style="display: none;">
         No se encontraron resultados para la búsqueda
     </div>
-    <table class="table table-striped">
+    <table class="table table-striped w-100">
+        <colgroup>
+            <col style="width: 15%">
+            <col style="width: 15%">
+            <col style="width: 15%">
+            <col style="width: 12%">
+            <col style="width: 12%">
+            <col style="width: 8%">
+            <col style="width: 23%">
+        </colgroup>
         <thead>
+            <style>
+                .table td,
+                .table th {
+                    padding: 1rem 1.5rem;
+                }
+
+                .table td {
+                    white-space: nowrap;
+                }
+
+                .table {
+                    margin-bottom: 0;
+                }
+
+                .table td:last-child {
+                    text-align: right;
+                }
+
+                .table th:last-child {
+                    text-align: right;
+                }
+            </style>
             <tr>
-                <th>Tipo</th>
-                <th>Ubicación</th>
-                <th>Usuario</th>
-                <th>Observaciones</th>
-                <th>Nombre Reserva DHCP</th>
-                <th>Nombre Cola HACOS</th>
-                <th>Acciones</th>
+                <th class="px-3">Tipo</th>
+                <th class="px-3">Ubicación</th>
+                <th class="px-3">Usuario</th>
+                <th class="px-3">Sede</th>
+                <th class="px-3">Nº Contrato</th>
+                <th class="px-3">Color</th>
+                <th class="px-3">Acciones</th>
             </tr>
         </thead>
         <tbody id="searchResultsBody">
@@ -69,33 +100,31 @@
                                 data.forEach(impresora => {
                                     const row = document.createElement('tr');
                                     row.innerHTML = `
-                                        <td>${impresora.tipo}</td>
-                                        <td>${impresora.ubicacion}</td>
-                                        <td>${impresora.usuario}</td>
-                                        <td>${impresora.observaciones}</td>
-                                        <td>${impresora.nombre_reserva_dhcp}</td>
-                                        <td>${impresora.nombre_cola_hacos}</td>
+                                        <td class="align-middle">${impresora.tipo}</td>
+                                        <td class="align-middle">${impresora.ubicacion}</td>
+                                        <td class="align-middle">${impresora.usuario}</td>
+                                        <td class="align-middle">${impresora.sede}</td>
+                                        <td class="align-middle">${impresora.num_contrato}</td>
+                                        <td class="align-middle">${impresora.color ? 'Sí' : 'No'}</td>
                                         <td>
-                                            
-                                                <a href="/impresoras/${impresora.id}" class="btn btn-primary btn-sm" title="Ver detalles">
-                                                    <i class="fa fa-fw fa-eye"></i>
-                                                    Ver detalles
-                                                </a>
-                                                <a href="/impresoras/${impresora.id}/edit" class="btn btn-secondary btn-sm" title="Editar">
-                                                    <i class="fa fa-fw fa-edit"></i>
-                                                    Editar
-                                                </a>
-                                                <form action="/impresoras/${impresora.id}" method="POST" style="display: inline;" onsubmit="return confirmDelete(event);">
-                                                    <input type="hidden" name="_token" value="${document.querySelector('meta[name="csrf-token"]').getAttribute('content')}">
-                                                    <input type="hidden" name="_method" value="DELETE">
-                                                    <button type="submit" class="btn btn-danger btn-sm" title="Eliminar">
-                                                        <i class="fa fa-fw fa-trash"></i>
-                                                        Eliminar
-                                                    </button>
-                                                </form>
-                                          
-                                        </td>
-                                    `;
+                                            <a href="/impresoras/${impresora.id}" class="btn btn-primary btn-sm" title="Ver detalles">
+                                                <i class="fa fa-fw fa-eye"></i>
+                                                Ver detalles
+                                            </a>
+                                            <a href="/impresoras/${impresora.id}/edit" class="btn btn-secondary btn-sm" title="Editar">
+                                                <i class="fa fa-fw fa-edit"></i>
+                                                Editar
+                                            </a>
+                                            <form action="/impresoras/${impresora.id}" method="POST" style="display: inline;" onsubmit="return confirmDelete(event);">
+                                                <input type="hidden" name="_token" value="${document.querySelector('meta[name="csrf-token"]').getAttribute('content')}">
+                                                <input type="hidden" name="_method" value="DELETE">
+                                                <button type="submit" class="btn btn-danger btn-sm" title="Eliminar">
+                                                    <i class="fa fa-fw fa-trash"></i>
+                                                    Eliminar
+                                                </button>
+                                            </form>
+                                        </td>`
+
                                     searchResultsBody.appendChild(row);
                                 });
                             } else {
