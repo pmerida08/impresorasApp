@@ -12,11 +12,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property $ubicacion
  * @property $usuario
  * @property $ip
- * @property $mac
  * @property $nombre_reserva_dhcp
  * @property $observaciones
  * @property $nombre_cola_hacos
- * @property $num_serie
  * @property $sede
  * @property $num_contrato
  * @property $color
@@ -43,9 +41,9 @@ class Impresora extends Model
         'nombre_reserva_dhcp',
         'observaciones',
         'nombre_cola_hacos',
-        'sede',
+        'sede_rcja',
         'num_contrato',
-        'color',
+        'color'
     ];
 
     public function historicos()

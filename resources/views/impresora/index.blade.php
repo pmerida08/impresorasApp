@@ -20,13 +20,11 @@
 
                             <div>
                                 <a href="{{ route('impresoras.create') }}" class="btn btn-primary">Añadir impresora</a>
-                                <a href="{{ route('impresoras.importar') }}" class="btn btn-success">
+                                <a href="{{ route('impresoras.importar.form') }}" class="btn btn-success">
                                     <i class="fas fa-file-import"></i> Importar CSV
                                 </a>
                             </div>
                         </div>
-
-
                     </div>
 
                     {{-- Mensaje de éxito --}}
@@ -40,13 +38,14 @@
                         <div class="table-responsive">
                             <table class="table table-striped table-hover w-100">
                                 <colgroup>
-                                    <col style="width: 15%">
-                                    <col style="width: 15%">
-                                    <col style="width: 15%">
+                                    <col style="width: 12%">
+                                    <col style="width: 12%">
+                                    <col style="width: 12%">
+                                    <col style="width: 12%">
                                     <col style="width: 12%">
                                     <col style="width: 12%">
                                     <col style="width: 8%">
-                                    <col style="width: 23%">
+                                    <col style="width: 20%">
                                 </colgroup>
                                 <thead class="thead">
                                     <style>
@@ -75,7 +74,8 @@
                                         <th class="px-3">Tipo</th>
                                         <th class="px-3">Ubicación</th>
                                         <th class="px-3">Usuario</th>
-                                        <th class="px-3">Sede</th>
+                                        <th class="px-3">Sede RCJA</th>
+                                        <th class="px-3">Organismo</th>
                                         <th class="px-3">Nº Contrato</th>
                                         <th class="px-3">Color</th>
                                         <th class="px-3">Acciones</th>
@@ -87,18 +87,16 @@
                                             <td>{{ $impresora->tipo }}</td>
                                             <td>{{ $impresora->ubicacion }}</td>
                                             <td>{{ $impresora->usuario }}</td>
-                                            <td>{{ $impresora->sede }}</td>
+                                            <td>{{ $impresora->sede_rcja }}</td>
+                                            <td>{{ $impresora->organismo }}</td>
                                             <td>{{ $impresora->num_contrato }}</td>
                                             <td>{{ $impresora->color ? 'Sí' : 'No' }}</td>
                                             <td>
-                                                <form action="{{ route('impresoras.destroy', $impresora->id) }}"
-                                                    method="POST">
-                                                    <a href="{{ route('impresoras.show', $impresora->id) }}"
-                                                        class="btn btn-primary btn-sm">
+                                                <form action="{{ route('impresoras.destroy', $impresora->id) }}" method="POST">
+                                                    <a href="{{ route('impresoras.show', $impresora->id) }}" class="btn btn-primary btn-sm">
                                                         <i class="fa fa-fw fa-eye"></i> {{ __('Ver detalles') }}
                                                     </a>
-                                                    <a href="{{ route('impresoras.edit', $impresora->id) }}"
-                                                        class="btn btn-secondary btn-sm">
+                                                    <a href="{{ route('impresoras.edit', $impresora->id) }}" class="btn btn-secondary btn-sm">
                                                         <i class="fa fa-fw fa-edit"></i> {{ __('Editar') }}
                                                     </a>
                                                     @csrf
@@ -119,7 +117,6 @@
                         <div class="pagination-container">
                             {!! $impresoras->withQueryString()->links('pagination::bootstrap-5') !!}
                         </div>
-
                     </div>
                 </div>
             </div>

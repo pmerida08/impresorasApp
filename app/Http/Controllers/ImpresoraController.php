@@ -101,4 +101,54 @@ class ImpresoraController extends Controller
     {
         return view('impresora.test');
     }
+
+    public function importar(Request $request)
+    {
+        $request->validate([
+            'csv_file' => 'required|file|mimes:csv,txt'
+        ]);
+
+        try {
+            $file = $request->file('csv_file');
+            $csvData = array_map('str_getcsv', file($file->getRealPath()));
+
+            // Remove headers
+            $headers = array_shift($csvData);
+            $headerCount = count($headers);
+
+            foreach ($csvData as $index => $row) {
+                // Skip rows that don't match header count
+                if (count($row) !== $headerCount) {
+                    \Log::warning("Row {$index} has incorrect number of columns. Expected: {$headerCount}, Got: " . count($row));
+                    continue;
+                }
+
+                $data = array_combine($headers, $row);
+
+                Impresora::create([
+                    'ip' => $data['ip'] ?? null,
+                    'sede_rcja' => $data['sede_rcja'] ?? null,
+                    'tipo' => $data['tipo'] ?? null,
+                    'num_contrato' => $data['num_contrato'] ?? null,
+                    'organismo' => $data['organismo'] ?? null,
+                    'descripcion' => $data['descripcion'] ?? null,
+                ]);
+
+                
+            }
+
+            return Redirect::route('impresoras.index')
+            ->with('success', 'Impresoras añadidas  correctamente.');
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al importar el archivo CSV: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function importarForm(): View
+    {
+        return view('impresora.importar');
+    }
 }

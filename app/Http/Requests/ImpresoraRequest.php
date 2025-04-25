@@ -23,11 +23,12 @@ class ImpresoraRequest extends FormRequest
     {
         return [
             'tipo' => 'required|string|max:255',
-            'ubicacion' => 'required|string|max:255',
-            'usuario' => 'required|string|max:255',
+            'ubicacion' => 'nullable|string|max:255',
+            'usuario' => 'nullable|string|max:255',
             'ip' => 'required|ip',
+            'organismo' => 'required|string|max:255',
             'nombre_reserva_dhcp' => 'nullable|string|max:255',
-            'observaciones' => 'nullable|string|max:255',
+            'descripcion' => 'nullable|string|max:255',
             'nombre_cola_hacos' => 'nullable|string|max:255',
             'sede' => 'required|string|max:255',
             'num_contrato' => 'required|string|max:255',
@@ -59,15 +60,16 @@ class ImpresoraRequest extends FormRequest
     public function attributes(): array
     {
         return [
+            'ip' => 'IP',
+            'sede_rcja' => 'Sede RCJA',
             'tipo' => 'Tipo',
+            'num_contrato' => 'Número de Contrato',
+            'organismo' => 'Organismo',
+            'descripcion' => 'Descripcion',
             'ubicacion' => 'Ubicación',
             'usuario' => 'Usuario',
-            'ip' => 'IP',
             'nombre_reserva_dhcp' => 'Nombre Reserva DHCP',
-            'observaciones' => 'Observaciones',
             'nombre_cola_hacos' => 'Nombre Cola HACOS',
-            'sede' => 'Sede',
-            'num_contrato' => 'Número de Contrato',
             'color' => 'Color',
         ];
     }

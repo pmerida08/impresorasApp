@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\ImpresoraController;
 use App\Http\Controllers\ImpresoraHistoricoController;
-use App\Http\Controllers\ImportadorImpresorasController;
 use App\Http\Controllers\EstadisticasController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -11,15 +10,24 @@ Route::get('/', function () {
     return view('home');
 });
 
-Route::get('/impresoras/buscar', [ImpresoraController::class, 'buscar'])->name('impresoras.buscar');
+// Custom impresora routes must be before the resource route
+Route::get('/impresoras/importar', [ImpresoraController::class, 'importarForm'])
+    ->name('impresoras.importar.form');
+Route::post('/impresoras/importar', [ImpresoraController::class, 'importar'])
+    ->name('impresoras.importar');
+Route::get('/impresoras/buscar', [ImpresoraController::class, 'buscar'])
+    ->name('impresoras.buscar');
+Route::get('/impresoras/{id}/historico', [ImpresoraHistoricoController::class, 'mostrar'])
+    ->name('impresoras.historico');
+Route::get('/impresoras/{id}/paginas-rango', [ImpresoraHistoricoController::class, 'mostrarPaginasEnRango'])
+    ->name('impresoras.paginas.rango');
 
+// Resource route should be after all custom routes
 Route::resource('impresoras', ImpresoraController::class);
 
-Route::post('/impresoras/importar', [ImportadorImpresorasController::class, 'impresoras'])->name('impresoras.importar');
+// Test and statistics routes
 Route::get('/test', [ImpresoraController::class, 'test']);
-Route::get('/impresoras/{id}/historico', [ImpresoraHistoricoController::class, 'mostrar'])->name('impresoras.historico');
-Route::get('/impresoras/{id}/historico', [ImpresoraHistoricoController::class, 'mostrar'])->name('impresoras.historico');
-Route::get('/impresoras/{id}/paginas-rango', [ImpresoraHistoricoController::class, 'mostrarPaginasEnRango'])->name('impresoras.paginas.rango');
-Route::get('/estadisticas/totales-por-mes', [EstadisticasController::class, 'totalesPorMes'])->name('estadisticas.totales-por-mes');
+Route::get('/estadisticas/totales-por-mes', [EstadisticasController::class, 'totalesPorMes'])
+    ->name('estadisticas.totales-por-mes');
 
 Auth::routes();
