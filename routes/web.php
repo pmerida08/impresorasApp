@@ -13,15 +13,13 @@ Route::get('/', function () {
 
 Route::get('/impresoras/buscar', [ImpresoraController::class, 'buscar'])->name('impresoras.buscar');
 
-
 Route::resource('impresoras', ImpresoraController::class);
 
+Route::post('/impresoras/importar', [ImportadorImpresorasController::class, 'impresoras'])->name('impresoras.importar');
 Route::get('/test', [ImpresoraController::class, 'test']);
 Route::get('/impresoras/{id}/historico', [ImpresoraHistoricoController::class, 'mostrar'])->name('impresoras.historico');
 Route::get('/impresoras/{id}/historico', [ImpresoraHistoricoController::class, 'mostrar'])->name('impresoras.historico');
 Route::get('/impresoras/{id}/paginas-rango', [ImpresoraHistoricoController::class, 'mostrarPaginasEnRango'])->name('impresoras.paginas.rango');
 Route::get('/estadisticas/totales-por-mes', [EstadisticasController::class, 'totalesPorMes'])->name('estadisticas.totales-por-mes');
-Route::get('/impresoras/importar', [ImportadorImpresorasController::class, 'mostrar'])->name('impresoras.importar.mostrar');
-Route::post('/impresoras/importar', [ImportadorImpresorasController::class, 'importar'])->name('impresoras.importar');
 
 Auth::routes();

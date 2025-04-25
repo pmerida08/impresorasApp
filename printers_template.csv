@@ -1,3 +1,4 @@
-tipo,ubicacion,usuario,sede,num_contrato,color
-HP LaserJet,Office 101,John Doe,Main Campus,CT-2023-001,true
-Canon iX6820,Room 202,Jane Smith,Branch Office,CT-2023-002,false
+ip,sede_rcja,tipo,organismo,num_serie,descripcion,contrato
+10.66.128.82,CHAP-COR-001,1,Delegacion de Hacienda,CT-2023-002,Impresora a color HP,Contrato 1
+10.66.128.81,CHAP-COR-001,1,Delegacion de Hacienda,CT-2023-001,Impresora a color HP,Contrato 1
+

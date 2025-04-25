@@ -19,11 +19,10 @@
                             </span>
 
                             <div>
-
                                 <a href="{{ route('impresoras.create') }}" class="btn btn-primary">Añadir impresora</a>
-                                {{-- <a href="{{ route('impresoras.importar.mostrar') }}" class="btn btn-success">
+                                <a href="{{ route('impresoras.importar') }}" class="btn btn-success">
                                     <i class="fas fa-file-import"></i> Importar CSV
-                                </a> --}}
+                                </a>
                             </div>
                         </div>
 
