@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\ImpresoraRequest;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Validator;
 
 class ImpresoraController extends Controller
 {
@@ -105,45 +106,118 @@ class ImpresoraController extends Controller
     public function importar(Request $request)
     {
         $request->validate([
-            'csv_file' => 'required|file|mimes:csv,txt'
+            'csv_file' => 'required|file|mimes:csv,txt|max:2048'
+        ], [
+            'csv_file.required' => 'El archivo CSV es obligatorio.',
+            'csv_file.file' => 'El archivo debe ser un fichero válido.',
+            'csv_file.mimes' => 'El archivo debe ser de tipo CSV o TXT.',
+            'csv_file.max' => 'El archivo no debe ser mayor de 2MB.'
         ]);
 
         try {
             $file = $request->file('csv_file');
             $csvData = array_map('str_getcsv', file($file->getRealPath()));
 
-            // Remove headers
-            $headers = array_shift($csvData);
+            // Saltamos la primera fila directamente sin usarla como headers
+            array_shift($csvData);
+
+            // Definimos los headers manualmente
+            $headers = ['ip', 'sede_rcja', 'tipo', 'num_contrato', 'organismo', 'descripcion'];
             $headerCount = count($headers);
+            $importedCount = 0;
+            $errors = [];
 
             foreach ($csvData as $index => $row) {
-                // Skip rows that don't match header count
+                $rowNumber = $index + 2; // +2 porque empezamos desde la segunda fila
+
+                // Skip empty rows
+                if (empty(array_filter($row))) {
+                    continue;
+                }
+
+                // Validate row length
                 if (count($row) !== $headerCount) {
-                    \Log::warning("Row {$index} has incorrect number of columns. Expected: {$headerCount}, Got: " . count($row));
+                    $errors[] = "Fila {$rowNumber}: Número incorrecto de columnas";
                     continue;
                 }
 
                 $data = array_combine($headers, $row);
 
-                Impresora::create([
-                    'ip' => $data['ip'] ?? null,
-                    'sede_rcja' => $data['sede_rcja'] ?? null,
-                    'tipo' => $data['tipo'] ?? null,
-                    'num_contrato' => $data['num_contrato'] ?? null,
-                    'organismo' => $data['organismo'] ?? null,
-                    'descripcion' => $data['descripcion'] ?? null,
+                // Validate individual fields
+                $rowValidation = Validator::make($data, [
+                    'ip' => 'required|ip',
+                    'sede_rcja' => 'required|string|max:255',
+                    'tipo' => 'required|string|max:255',
+                    'num_contrato' => 'required|string|max:255',
+                    'organismo' => 'nullable|string|max:255',
+                    'descripcion' => 'nullable|string|max:1000'
                 ]);
 
-                
+                if ($rowValidation->fails()) {
+                    $errors[] = "Fila {$rowNumber}: " . implode(', ', $rowValidation->errors()->all());
+                    continue;
+                }
+
+                try {
+                    // Check if impresora with same IP already exists
+                    $existingImpresora = Impresora::where('ip', $data['ip'])->first();
+
+                    if ($existingImpresora) {
+                        // Update existing record
+                        $existingImpresora->update([
+                            'sede_rcja' => $data['sede_rcja'],
+                            'tipo' => $data['tipo'],
+                            'num_contrato' => $data['num_contrato'],
+                            'organismo' => $data['organismo'] ?? null,
+                            'descripcion' => $data['descripcion'] ?? null,
+                        ]);
+                    } else {
+                        // Create new record
+                        Impresora::create([
+                            'ip' => $data['ip'],
+                            'sede_rcja' => $data['sede_rcja'],
+                            'tipo' => $data['tipo'],
+                            'num_contrato' => $data['num_contrato'],
+                            'organismo' => $data['organismo'] ?? null,
+                            'descripcion' => $data['descripcion'] ?? null,
+                        ]);
+                    }
+
+                    $importedCount++;
+                } catch (\Exception $e) {
+                    $errors[] = "Fila {$rowNumber}: Error al guardar en la base de datos - " . $e->getMessage();
+                }
             }
 
-            return Redirect::route('impresoras.index')
-            ->with('success', 'Impresoras añadidas  correctamente.');
+            // Reemplaza la parte final de la función importar con esto:
+            $response = [
+                'message' => "Importación completada. {$importedCount} registros procesados correctamente."
+            ];
+
+            if (!empty($errors)) {
+                $response['errors'] = $errors;
+                if ($request->wantsJson()) {
+                    return response()->json($response, 422);
+                }
+                return redirect()->route('impresoras.index')
+                    ->with('error', 'Hubo errores durante la importación: ' . implode(', ', $errors));
+            }
+
+            if ($request->wantsJson()) {
+                return response()->json($response);
+            }
+
+            return redirect()->route('impresoras.index')
+                ->with('success', "Importación completada. {$importedCount} registros procesados correctamente.");
 
         } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Error al importar el archivo CSV: ' . $e->getMessage()
-            ], 500);
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'message' => 'Error al procesar el archivo: ' . $e->getMessage()
+                ], 500);
+            }
+            return redirect()->route('impresoras.index')
+                ->with('error', 'Error al procesar el archivo: ' . $e->getMessage());
         }
     }
 

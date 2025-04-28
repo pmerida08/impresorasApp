@@ -73,6 +73,7 @@
                                     <tr>
                                         <th class="px-3">Tipo</th>
                                         <th class="px-3">Ubicación</th>
+                                        <th class="px-3">IP</th>
                                         <th class="px-3">Usuario</th>
                                         <th class="px-3">Sede RCJA</th>
                                         <th class="px-3">Organismo</th>
@@ -86,6 +87,7 @@
                                         <tr>
                                             <td>{{ $impresora->tipo }}</td>
                                             <td>{{ $impresora->ubicacion }}</td>
+                                            <td>{{ $impresora->ip }}</td>
                                             <td>{{ $impresora->usuario }}</td>
                                             <td>{{ $impresora->sede_rcja }}</td>
                                             <td>{{ $impresora->organismo }}</td>

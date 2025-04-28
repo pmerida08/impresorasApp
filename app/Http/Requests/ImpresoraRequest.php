@@ -30,7 +30,7 @@ class ImpresoraRequest extends FormRequest
             'nombre_reserva_dhcp' => 'nullable|string|max:255',
             'descripcion' => 'nullable|string|max:255',
             'nombre_cola_hacos' => 'nullable|string|max:255',
-            'sede' => 'required|string|max:255',
+            'sede_rcja' => 'required|string|max:255',
             'num_contrato' => 'required|string|max:255',
             'color' => 'required|boolean',
         ];
