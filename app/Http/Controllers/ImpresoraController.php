@@ -70,7 +70,10 @@ class ImpresoraController extends Controller
      */
     public function update(ImpresoraRequest $request, Impresora $impresora): RedirectResponse
     {
+
         $impresora->update($request->validated());
+
+        var_dump($request->validated());
 
         return Redirect::route('impresoras.index')
             ->with('success', 'Impresora actualizada correctamente.');
@@ -78,17 +81,33 @@ class ImpresoraController extends Controller
 
     public function buscar(Request $request)
     {
+        $filter = $request->input('f');
         $query = $request->input('q');
         $sanitizedQuery = str_replace('%', '', $query);
 
-        $impresoras = Impresora::where('tipo', 'LIKE', '%' . $sanitizedQuery . '%')
-            ->orWhere('ubicacion', 'LIKE', '%' . $sanitizedQuery . '%')
-            ->orWhere('usuario', 'LIKE', '%' . $sanitizedQuery . '%')
-            ->select('id', 'tipo', 'ubicacion', 'usuario')
-            ->get();
+        // Lista de filtros permitidos
+        $allowedFilters = ['tipo', 'ubicacion', 'ip', 'usuario', 'sede_rcja', 'organismo', 'num_contrato', 'color', 'bw'];
 
-        return response()->json($impresoras);
+        if (!in_array($filter, $allowedFilters)) {
+            return response()->json([], 400);
+        }
+
+        $impresoras = Impresora::query();
+
+        if ($filter === 'color') {
+            $impresoras->where('color', 1);
+        } elseif ($filter === 'bw') {
+            $impresoras->where('color', 0);
+        } else {
+            $impresoras->where($filter, 'LIKE', '%' . $sanitizedQuery . '%');
+        }
+
+        $result = $impresoras->select('id', 'tipo', 'ubicacion', 'ip', 'usuario', 'sede_rcja', 'organismo', 'num_contrato', 'color')->get();
+
+        return response()->json($result);
     }
+
+
 
     public function destroy($id): RedirectResponse
     {

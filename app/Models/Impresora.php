@@ -13,9 +13,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property $usuario
  * @property $ip
  * @property $nombre_reserva_dhcp
- * @property $observaciones
+ * @property $descripcion
+ * @property $organismo
  * @property $nombre_cola_hacos
- * @property $sede
+ * @property $sede_rcja
  * @property $num_contrato
  * @property $color
  * @property $created_at
@@ -39,7 +40,8 @@ class Impresora extends Model
         'usuario',
         'ip',
         'nombre_reserva_dhcp',
-        'observaciones',
+        'descripcion',
+        'organismo',
         'nombre_cola_hacos',
         'sede_rcja',
         'num_contrato',

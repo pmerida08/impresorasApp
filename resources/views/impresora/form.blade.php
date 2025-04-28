@@ -29,10 +29,10 @@
         </div>
 
         <div class="form-group mb-2 mb20">
-            <label for="sede" class="form-label">{{ __('Sede') }}</label>
-            <input type="text" name="sede" class="form-control @error('sede') is-invalid @enderror"
-                value="{{ old('sede', $impresora?->sede) }}" id="sede">
-            {!! $errors->first('sede', '<div class="invalid-feedback" role="alert"><strong>:message</strong></div>') !!}
+            <label for="sede_rcja" class="form-label">{{ __('Sede_rcja') }}</label>
+            <input type="text" name="sede_rcja" class="form-control @error('sede_rcja') is-invalid @enderror"
+                value="{{ old('sede_rcja', $impresora?->sede_rcja) }}" id="sede_rcja">
+            {!! $errors->first('sede_rcja', '<div class="invalid-feedback" role="alert"><strong>:message</strong></div>') !!}
         </div>
 
         <div class="form-group mb-2 mb20">
@@ -40,6 +40,13 @@
             <input type="text" name="num_contrato" class="form-control @error('num_contrato') is-invalid @enderror"
                 value="{{ old('num_contrato', $impresora?->num_contrato) }}" id="num_contrato">
             {!! $errors->first('num_contrato', '<div class="invalid-feedback" role="alert"><strong>:message</strong></div>') !!}
+        </div>
+
+        <div class="form-group mb-2 mb20">
+            <label for="organismo" class="form-label">{{ __('Organismo') }}</label>
+            <input type="text" name="organismo" class="form-control @error('organismo') is-invalid @enderror"
+                value="{{ old('organismo', $impresora?->organismo) }}" id="organismo">
+            {!! $errors->first('organismo', '<div class="invalid-feedback" role="alert"><strong>:message</strong></div>') !!}
         </div>
 
         <div class="form-group mb-2 mb20">
@@ -63,7 +70,7 @@
         </div>
 
         <div class="form-group mb-2 mb20">
-            <label for="descripcion" class="form-label">{{ __('Observaciones') }}</label>
+            <label for="descripcion" class="form-label">{{ __('Descripcion') }}</label>
             <textarea name="descripcion" class="form-control @error('descripcion') is-invalid @enderror" id="descripcion">{{ old('descripcion', $impresora?->descripcion) }}</textarea>
             {!! $errors->first(
                 'descripcion',

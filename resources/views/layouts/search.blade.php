@@ -1,6 +1,50 @@
 <div class="row mb-3">
     <div class="col-md-6">
-        <input type="text" id="searchInput" class="form-control" placeholder="Buscar impresora ">
+        <input type="text" id="searchInput" class="form-control" placeholder="Buscar impresora">
+    </div>
+
+    <div class="mt-2">
+        <div class="d-flex flex-wrap">
+            <div class="form-check me-3">
+                <input class="form-check-input" type="radio" name="filter" id="filterTipo" value="tipo" checked>
+                <label class="form-check-label" for="filterTipo">Tipo</label>
+            </div>
+
+            <div class="form-check me-3">
+                <input class="form-check-input" type="radio" name="filter" id="filterUbicacion" value="ubicacion">
+                <label class="form-check-label" for="filterUbicacion">Ubicación</label>
+            </div>
+
+            <div class="form-check me-3">
+                <input class="form-check-input" type="radio" name="filter" id="filterIP" value="ip">
+                <label class="form-check-label" for="filterIP">IP</label>
+            </div>
+
+            <div class="form-check me-3">
+                <input class="form-check-input" type="radio" name="filter" id="filterUsuario" value="usuario">
+                <label class="form-check-label" for="filterUsuario">Usuario</label>
+            </div>
+
+            <div class="form-check me-3">
+                <input class="form-check-input" type="radio" name="filter" id="filterSede" value="sede_rcja">
+                <label class="form-check-label" for="filterSede">Sede RCJA</label>
+            </div>
+
+            <div class="form-check me-3">
+                <input class="form-check-input" type="radio" name="filter" id="filterOrganismo" value="organismo">
+                <label class="form-check-label" for="filterOrganismo">Organismo</label>
+            </div>
+
+            <div class="form-check me-3">
+                <input class="form-check-input" type="radio" name="filter" id="filterContrato" value="num_contrato">
+                <label class="form-check-label" for="filterContrato">Nº de Contrato</label>
+            </div>
+
+            <div class="form-check me-3">
+                <input class="form-check-input" type="radio" name="filter" id="filterColor" value="color">
+                <label class="form-check-label" for="filterColor">Color</label>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -33,10 +77,7 @@
                     margin-bottom: 0;
                 }
 
-                .table td:last-child {
-                    text-align: right;
-                }
-
+                .table td:last-child,
                 .table th:last-child {
                     text-align: right;
                 }
@@ -44,15 +85,16 @@
             <tr>
                 <th class="px-3">Tipo</th>
                 <th class="px-3">Ubicación</th>
+                <th class="px-3">IP</th>
                 <th class="px-3">Usuario</th>
-                <th class="px-3">Sede</th>
+                <th class="px-3">Sede RCJA</th>
+                <th class="px-3">Organismo</th>
                 <th class="px-3">Nº Contrato</th>
                 <th class="px-3">Color</th>
                 <th class="px-3">Acciones</th>
             </tr>
         </thead>
-        <tbody id="searchResultsBody">
-        </tbody>
+        <tbody id="searchResultsBody"></tbody>
     </table>
 </div>
 
@@ -62,9 +104,10 @@
         const searchResults = document.getElementById('searchResults');
         const searchResultsBody = document.getElementById('searchResultsBody');
         const noResults = document.getElementById('noResults');
+        const filterRadios = document.querySelectorAll('input[name="filter"]');
         let searchTimeout;
+        let currentFilter = 'tipo';
 
-        // Function to handle delete confirmation
         function confirmDelete(event) {
             event.preventDefault();
             if (confirm('¿Está seguro que desea eliminar esta impresora?')) {
@@ -72,75 +115,84 @@
             }
         }
 
-        searchInput.addEventListener('input', function() {
-            clearTimeout(searchTimeout);
-            const query = this.value.trim();
-
+        function performSearch() {
+            const query = searchInput.value.trim();
+            
             if (query.length === 0) {
                 searchResults.style.display = 'none';
                 noResults.style.display = 'none';
                 return;
             }
 
-            searchTimeout = setTimeout(() => {
-                if (query.length >= 2) {
-                    fetch(`/impresoras/buscar?q=${encodeURIComponent(query)}`)
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error('Error en la búsqueda');
-                            }
-                            return response.json();
-                        })
-                        .then(data => {
-                            searchResultsBody.innerHTML = '';
-                            searchResults.style.display = 'block';
+            if (query.length !== 0) {
+                fetch(
+                        `/impresoras/buscar?q=${encodeURIComponent(query)}&f=${encodeURIComponent(currentFilter)}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Error en la búsqueda');
+                        }                      
+                        return response.json();
+                    })
+                    .then(data => {
+                        searchResultsBody.innerHTML = '';
+                        searchResults.style.display = 'block';
 
-                            if (data.length > 0) {
-                                noResults.style.display = 'none';
-                                data.forEach(impresora => {
-                                    const row = document.createElement('tr');
-                                    row.innerHTML = `
-                                        <td class="align-middle">${impresora.tipo}</td>
-                                        <td class="align-middle">${impresora.ubicacion}</td>
-                                        <td class="align-middle">${impresora.usuario}</td>
-                                        <td class="align-middle">${impresora.sede}</td>
-                                        <td class="align-middle">${impresora.num_contrato}</td>
-                                        <td class="align-middle">${impresora.color ? 'Sí' : 'No'}</td>
-                                        <td>
-                                            <a href="/impresoras/${impresora.id}" class="btn btn-primary btn-sm" title="Ver detalles">
-                                                <i class="fa fa-fw fa-eye"></i>
-                                                Ver detalles
-                                            </a>
-                                            <a href="/impresoras/${impresora.id}/edit" class="btn btn-secondary btn-sm" title="Editar">
-                                                <i class="fa fa-fw fa-edit"></i>
-                                                Editar
-                                            </a>
-                                            <form action="/impresoras/${impresora.id}" method="POST" style="display: inline;" onsubmit="return confirmDelete(event);">
-                                                <input type="hidden" name="_token" value="${document.querySelector('meta[name="csrf-token"]').getAttribute('content')}">
-                                                <input type="hidden" name="_method" value="DELETE">
-                                                <button type="submit" class="btn btn-danger btn-sm" title="Eliminar">
-                                                    <i class="fa fa-fw fa-trash"></i>
-                                                    Eliminar
-                                                </button>
-                                            </form>
-                                        </td>`
-
-                                    searchResultsBody.appendChild(row);
-                                });
-                            } else {
-                                noResults.style.display = 'block';
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            searchResults.style.display = 'none';
+                        if (data.length > 0) {
                             noResults.style.display = 'none';
-                        });
-                } else {
-                    searchResults.style.display = 'none';
-                    noResults.style.display = 'none';
-                }
-            }, 300);
+                            data.forEach(impresora => {
+                                const row = document.createElement('tr');
+                                row.innerHTML = `
+                                    <td class="align-middle">${impresora.tipo ?? ""}</td>
+                                    <td class="align-middle">${impresora.ubicacion ?? ""}</td>
+                                    <td class="align-middle">${impresora.ip ?? ""}</td>
+                                    <td class="align-middle">${impresora.usuario ?? ""}</td>
+                                    <td class="align-middle">${impresora.sede_rcja ?? ""}</td>
+                                    <td class="align-middle">${impresora.organismo ?? ""}</td>
+                                    <td class="align-middle">${impresora.num_contrato ?? ""}</td>
+                                    <td class="align-middle">${impresora.color ? 'Sí' : 'No'}</td>
+                                    <td>
+                                        <a href="/impresoras/${impresora.id}" class="btn btn-primary btn-sm" title="Ver detalles">
+                                            <i class="fa fa-fw fa-eye"></i> Ver detalles
+                                        </a>
+                                        <a href="/impresoras/${impresora.id}/edit" class="btn btn-secondary btn-sm" title="Editar">
+                                            <i class="fa fa-fw fa-edit"></i> Editar
+                                        </a>
+                                        <form action="/impresoras/${impresora.id}" method="POST" style="display: inline;" onsubmit="return confirmDelete(event);">
+                                            <input type="hidden" name="_token" value="${document.querySelector('meta[name="csrf-token"]').getAttribute('content')}">
+                                            <input type="hidden" name="_method" value="DELETE">
+                                            <button type="submit" class="btn btn-danger btn-sm" title="Eliminar">
+                                                <i class="fa fa-fw fa-trash"></i> Eliminar
+                                            </button>
+                                        </form>
+                                    </td>
+                                `;
+                                searchResultsBody.appendChild(row);
+                            });
+                        } else {
+                            noResults.style.display = 'block';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        searchResults.style.display = 'none';
+                        noResults.style.display = 'none';
+                    });
+            } else {
+                searchResults.style.display = 'none';
+                noResults.style.display = 'none';
+            }
+        }
+
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(performSearch, 300);
+        });
+
+        filterRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                currentFilter = this.value;
+                performSearch();
+            });
         });
     });
 </script>
