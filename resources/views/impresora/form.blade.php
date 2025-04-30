@@ -36,10 +36,17 @@
         </div>
 
         <div class="form-group mb-2 mb20">
-            <label for="num_contrato" class="form-label">{{ __('Número de Contrato') }}</label>
-            <input type="text" name="num_contrato" class="form-control @error('num_contrato') is-invalid @enderror"
-                value="{{ old('num_contrato', $impresora?->num_contrato) }}" id="num_contrato">
-            {!! $errors->first('num_contrato', '<div class="invalid-feedback" role="alert"><strong>:message</strong></div>') !!}
+            <label for="contrato" class="form-label">{{ __('Contrato') }}</label>
+            <input type="text" name="contrato" class="form-control @error('contrato') is-invalid @enderror"
+                value="{{ old('contrato', $impresora?->contrato) }}" id="contrato">
+            {!! $errors->first('contrato', '<div class="invalid-feedback" role="alert"><strong>:message</strong></div>') !!}
+        </div>
+
+        <div class="form-group mb-2 mb20">
+            <label for="num_serie" class="form-label">{{ __('Número de Serie') }}</label>
+            <input type="text" name="num_serie" class="form-control @error('num_serie') is-invalid @enderror"
+                value="{{ old('num_serie', $impresora?->num_serie) }}" id="num_serie">
+            {!! $errors->first('num_serie', '<div class="invalid-feedback" role="alert"><strong>:message</strong></div>') !!}
         </div>
 
         <div class="form-group mb-2 mb20">

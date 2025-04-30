@@ -36,8 +36,13 @@
             </div>
 
             <div class="form-check me-3">
-                <input class="form-check-input" type="radio" name="filter" id="filterContrato" value="num_contrato">
-                <label class="form-check-label" for="filterContrato">Nº de Contrato</label>
+                <input class="form-check-input" type="radio" name="filter" id="filterContrato" value="contrato">
+                <label class="form-check-label" for="filterContrato">Contrato</label>
+            </div>
+
+            <div class="form-check me-3">
+                <input class="form-check-input" type="radio" name="filter" id="filterNumSerie" value="num_serie">
+                <label class="form-check-label" for="filterNumSerie">Nº de serie</label>
             </div>
 
             <div class="form-check me-3">
@@ -89,7 +94,8 @@
                 <th class="px-3">Usuario</th>
                 <th class="px-3">Sede RCJA</th>
                 <th class="px-3">Organismo</th>
-                <th class="px-3">Nº Contrato</th>
+                <th class="px-3">Contrato</th>
+                <th class="px-3">Nº de serie</th>
                 <th class="px-3">Color</th>
                 <th class="px-3">Acciones</th>
             </tr>
@@ -148,7 +154,8 @@
                                     <td class="align-middle">${impresora.usuario ?? ""}</td>
                                     <td class="align-middle">${impresora.sede_rcja ?? ""}</td>
                                     <td class="align-middle">${impresora.organismo ?? ""}</td>
-                                    <td class="align-middle">${impresora.num_contrato ?? ""}</td>
+                                    <td class="align-middle">${impresora.contrato ?? ""}</td>
+                                    <td class="align-middle">${impresora.num_serie ?? ""}</td>
                                     <td class="align-middle">${impresora.color ? 'Sí' : 'No'}</td>
                                     <td>
                                         <a href="/impresoras/${impresora.id}" class="btn btn-primary btn-sm" title="Ver detalles">

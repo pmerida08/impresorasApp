@@ -17,7 +17,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property $organismo
  * @property $nombre_cola_hacos
  * @property $sede_rcja
- * @property $num_contrato
+ * @property $contrato
+ * @property $num_serie
  * @property $color
  * @property $created_at
  * @property $updated_at
@@ -44,7 +45,8 @@ class Impresora extends Model
         'organismo',
         'nombre_cola_hacos',
         'sede_rcja',
-        'num_contrato',
+        'contrato',
+        'num_serie',
         'color'
     ];
 
@@ -52,7 +54,6 @@ class Impresora extends Model
     {
         return $this->hasMany(ImpresoraHistorico::class);
     }
-
 
     public function getModeloAttribute()
     {
@@ -101,7 +102,7 @@ class Impresora extends Model
         $community = "public";
         $oids = [
             ".1.3.6.1.4.1.11.2.3.9.4.2.1.4.1.2.6.0",
-            ".1.3.6.1.2.1.43.10.2.1.4.1.1"
+
         ];
 
         try {
@@ -139,28 +140,27 @@ class Impresora extends Model
         }
     }
 
+    // public function getNumSerieAttribute()
+    // {
+    //     $host = $this->attributes['ip'];
+    //     $community = "public"; // Comunidad SNMP (por defecto suele ser "public")
+    //     $oid = ".1.3.6.1.2.1.43.5.1.1.17.1";
 
+    //     try {
+    //         // Consultar SNMP
+    //         $model = @snmpget($host, $community, $oid);
 
-    public function getNumSerieAttribute()
-    {
-        $host = $this->attributes['ip'];
-        $community = "public"; // Comunidad SNMP (por defecto suele ser "public")
-        $oid = ".1.3.6.1.2.1.43.5.1.1.17.1";
+    //         // Verificar si no hay respuesta o la respuesta es inválida
+    //         if ($model === false) {
+    //             return "No responde"; // Retorna un mensaje si no hay respuesta
+    //         }
 
-        try {
-            // Consultar SNMP
-            $model = @snmpget($host, $community, $oid);
+    //         return substr(explode(":", $model)[1], 2, -1); // Retorna el número de serie
+    //     } catch (\Exception $e) {
+    //         return "Error SNMP"; // Retorna un mensaje en caso de error
+    //     }
+    // }
 
-            // Verificar si no hay respuesta o la respuesta es inválida
-            if ($model === false) {
-                return "No responde"; // Retorna un mensaje si no hay respuesta
-            }
-
-            return substr(explode(":", $model)[1], 2, -1); // Retorna el número de serie
-        } catch (\Exception $e) {
-            return "Error SNMP"; // Retorna un mensaje en caso de error
-        }
-    }
     public function getMacAttribute()
     {
         $host = $this->attributes['ip'];
@@ -201,6 +201,27 @@ class Impresora extends Model
         } catch (\Exception $e) {
             return "Error SNMP"; // En caso de excepción, retornar un mensaje de error
         }
+    }
+
+    public function actualizarNumSerie() // Para actualizar el número de serie
+    {
+        $host = $this->attributes['ip'];
+        $community = "public";
+        $oid = ".1.3.6.1.2.1.43.5.1.1.17.1";
+
+        try {
+            $model = @snmpget($host, $community, $oid);
+
+            if ($model === false) {
+                $this->num_serie = "No responde";
+            } else {
+                $this->num_serie = substr(explode(":", $model)[1], 2, -1);
+            }
+        } catch (\Exception $e) {
+            $this->num_serie = "Error SNMP";
+        }
+
+        $this->save();
     }
 
 }

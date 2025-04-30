@@ -86,7 +86,7 @@ class ImpresoraController extends Controller
         $sanitizedQuery = str_replace('%', '', $query);
 
         // Lista de filtros permitidos
-        $allowedFilters = ['tipo', 'ubicacion', 'ip', 'usuario', 'sede_rcja', 'organismo', 'num_contrato', 'color', 'bw'];
+        $allowedFilters = ['tipo', 'ubicacion', 'ip', 'usuario', 'sede_rcja', 'organismo', 'contrato', 'color', 'num_serie'];
 
         if (!in_array($filter, $allowedFilters)) {
             return response()->json([], 400);
@@ -102,7 +102,7 @@ class ImpresoraController extends Controller
             $impresoras->where($filter, 'LIKE', '%' . $sanitizedQuery . '%');
         }
 
-        $result = $impresoras->select('id', 'tipo', 'ubicacion', 'ip', 'usuario', 'sede_rcja', 'organismo', 'num_contrato', 'color')->get();
+        $result = $impresoras->select('id', 'tipo', 'ubicacion', 'ip', 'usuario', 'sede_rcja', 'organismo', 'contrato', 'num_serie', 'color')->get();
 
         return response()->json($result);
     }

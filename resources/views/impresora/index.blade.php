@@ -76,8 +76,9 @@
                                         <th class="px-3">IP</th>
                                         <th class="px-3">Usuario</th>
                                         <th class="px-3">Sede RCJA</th>
+                                        <th class="px-3">Nº Serie</th>
                                         <th class="px-3">Organismo</th>
-                                        <th class="px-3">Nº Contrato</th>
+                                        <th class="px-3">Contrato</th>
                                         <th class="px-3">Color</th>
                                         <th class="px-3">Acciones</th>
                                     </tr>
@@ -90,15 +91,19 @@
                                             <td>{{ $impresora->ip }}</td>
                                             <td>{{ $impresora->usuario }}</td>
                                             <td>{{ $impresora->sede_rcja }}</td>
+                                            <td>{{ $impresora->num_serie }}</td>
                                             <td>{{ $impresora->organismo }}</td>
-                                            <td>{{ $impresora->num_contrato }}</td>
+                                            <td>{{ $impresora->contrato }}</td>
                                             <td>{{ $impresora->color ? 'Sí' : 'No' }}</td>
                                             <td>
-                                                <form action="{{ route('impresoras.destroy', $impresora->id) }}" method="POST">
-                                                    <a href="{{ route('impresoras.show', $impresora->id) }}" class="btn btn-primary btn-sm">
+                                                <form action="{{ route('impresoras.destroy', $impresora->id) }}"
+                                                    method="POST">
+                                                    <a href="{{ route('impresoras.show', $impresora->id) }}"
+                                                        class="btn btn-primary btn-sm">
                                                         <i class="fa fa-fw fa-eye"></i> {{ __('Ver detalles') }}
                                                     </a>
-                                                    <a href="{{ route('impresoras.edit', $impresora->id) }}" class="btn btn-secondary btn-sm">
+                                                    <a href="{{ route('impresoras.edit', $impresora->id) }}"
+                                                        class="btn btn-secondary btn-sm">
                                                         <i class="fa fa-fw fa-edit"></i> {{ __('Editar') }}
                                                     </a>
                                                     @csrf

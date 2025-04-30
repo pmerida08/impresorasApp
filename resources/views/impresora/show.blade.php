@@ -33,14 +33,17 @@
                             <strong>Páginas impresas en blanco y negro:</strong>
                             {{ $impresora->paginasbw }}
                         </div>
-                        <div class="form-group mb-2 mb20">
-                            <strong>Páginas impresas en color:</strong>
-                            {{ $impresora->paginascolor }}
-                        </div>
+
+                        @if ($impresora->color == 1)
+                            <div class="form-group mb-2 mb20">
+                                <strong>Páginas impresas en color:</strong>
+                                {{ $impresora->paginascolor }}
+                            </div>
+                        @endif
 
                         <div class="form-group mb-2 mb20">
                             <strong>Número de serie:</strong>
-                            {{ $impresora->numserie }}
+                            {{ $impresora->num_serie }}
                         </div>
                         <div class="form-group mb-2 mb20">
                             <strong>IP:</strong>

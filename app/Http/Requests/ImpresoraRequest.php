@@ -31,7 +31,8 @@ class ImpresoraRequest extends FormRequest
             'descripcion' => 'nullable|string|max:255',
             'nombre_cola_hacos' => 'nullable|string|max:255',
             'sede_rcja' => 'required|string|max:255',
-            'num_contrato' => 'required|string|max:255',
+            'contrato' => 'required|string|max:255',
+            'num_serie' => 'required|string|max:24',
             'color' => 'required|int|max:1',
         ];
     }
@@ -63,13 +64,14 @@ class ImpresoraRequest extends FormRequest
             'ip' => 'IP',
             'sede_rcja' => 'Sede RCJA',
             'tipo' => 'Tipo',
-            'num_contrato' => 'Número de Contrato',
+            'contrato' => 'Número de Contrato',
             'organismo' => 'Organismo',
             'descripcion' => 'Descripcion',
             'ubicacion' => 'Ubicación',
             'usuario' => 'Usuario',
             'nombre_reserva_dhcp' => 'Nombre Reserva DHCP',
             'nombre_cola_hacos' => 'Nombre Cola HACOS',
+            'num_serie' => 'Número de serie',
             'color' => 'Color',
         ];
     }
