@@ -11,9 +11,10 @@
             <li>ip</li>
             <li>sede_rcja</li>
             <li>tipo</li>
-            <li>num_contrato</li>
             <li>organismo</li>
+            <li>contrato</li>
             <li>descripcion</li>
+            <li>num_serie</li>
         </ul>
     </div>
 

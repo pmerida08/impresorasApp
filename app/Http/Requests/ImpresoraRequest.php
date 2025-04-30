@@ -64,7 +64,7 @@ class ImpresoraRequest extends FormRequest
             'ip' => 'IP',
             'sede_rcja' => 'Sede RCJA',
             'tipo' => 'Tipo',
-            'contrato' => 'Número de Contrato',
+            'contrato' => 'Contrato',
             'organismo' => 'Organismo',
             'descripcion' => 'Descripcion',
             'ubicacion' => 'Ubicación',

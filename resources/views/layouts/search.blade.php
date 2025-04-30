@@ -1,24 +1,25 @@
 <div class="row mb-3">
     <div class="col-md-6 d-flex">
         <input type="text" id="searchInput" class="form-control" placeholder="Buscar impresora">
-        <button class="btn btn-secondary ms-2 position-relative" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">
-            <i class="bi bi-funnel "></i>
-            {{-- <span id="activeFilterLabel" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary small" style="font-size: 0.65em;">
-                Tipo
-            </span> --}}
+        <button class="btn btn-secondary ms-2 d-flex align-items-center" type="button" data-bs-toggle="collapse"
+            data-bs-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">
+            <i class="bi bi-funnel me-2"></i> Filtrar
         </button>
     </div>
+
 
     <div class="collapse mt-2" id="filterCollapse">
         <div class="card card-body">
             <div class="d-flex flex-wrap">
                 <div class="form-check me-3">
-                    <input class="form-check-input" type="radio" name="filter" id="filterTipo" value="tipo" checked>
+                    <input class="form-check-input" type="radio" name="filter" id="filterTipo" value="tipo"
+                        checked>
                     <label class="form-check-label" for="filterTipo">Tipo</label>
                 </div>
 
                 <div class="form-check me-3">
-                    <input class="form-check-input" type="radio" name="filter" id="filterUbicacion" value="ubicacion">
+                    <input class="form-check-input" type="radio" name="filter" id="filterUbicacion"
+                        value="ubicacion">
                     <label class="form-check-label" for="filterUbicacion">Ubicación</label>
                 </div>
 
@@ -38,7 +39,8 @@
                 </div>
 
                 <div class="form-check me-3">
-                    <input class="form-check-input" type="radio" name="filter" id="filterOrganismo" value="organismo">
+                    <input class="form-check-input" type="radio" name="filter" id="filterOrganismo"
+                        value="organismo">
                     <label class="form-check-label" for="filterOrganismo">Organismo</label>
                 </div>
 
@@ -139,7 +141,7 @@
 
         function performSearch() {
             const query = searchInput.value.trim();
-            
+
             if (query.length === 0) {
                 searchResults.style.display = 'none';
                 noResults.style.display = 'none';
@@ -148,11 +150,12 @@
 
             if (query.length !== 0) {
                 fetch(
-                        `/impresoras/buscar?q=${encodeURIComponent(query)}&f=${encodeURIComponent(currentFilter)}`)
+                        `/impresoras/buscar?q=${encodeURIComponent(query)}&f=${encodeURIComponent(currentFilter)}`
+                    )
                     .then(response => {
                         if (!response.ok) {
                             throw new Error('Error en la búsqueda');
-                        }                      
+                        }
                         return response.json();
                     })
                     .then(data => {

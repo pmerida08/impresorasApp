@@ -70,7 +70,6 @@ class ImpresoraController extends Controller
      */
     public function update(ImpresoraRequest $request, Impresora $impresora): RedirectResponse
     {
-
         $impresora->update($request->validated());
 
         var_dump($request->validated());
@@ -107,8 +106,6 @@ class ImpresoraController extends Controller
         return response()->json($result);
     }
 
-
-
     public function destroy($id): RedirectResponse
     {
         Impresora::find($id)->delete();
@@ -141,7 +138,7 @@ class ImpresoraController extends Controller
             array_shift($csvData);
 
             // Definimos los headers manualmente
-            $headers = ['ip', 'sede_rcja', 'tipo', 'num_contrato', 'organismo', 'descripcion'];
+            $headers = ['ip', 'sede_rcja', 'tipo', 'contrato', 'organismo', 'descripcion', 'num_serie'];
             $headerCount = count($headers);
             $importedCount = 0;
             $errors = [];
@@ -167,9 +164,10 @@ class ImpresoraController extends Controller
                     'ip' => 'required|ip',
                     'sede_rcja' => 'required|string|max:255',
                     'tipo' => 'required|string|max:255',
-                    'num_contrato' => 'required|string|max:255',
                     'organismo' => 'nullable|string|max:255',
-                    'descripcion' => 'nullable|string|max:1000'
+                    'num_serie' => 'required|string|max:24',
+                    'descripcion' => 'nullable|string|max:1000',
+                    'contrato' => 'required|string|max:255'
                 ]);
 
                 if ($rowValidation->fails()) {
@@ -186,9 +184,10 @@ class ImpresoraController extends Controller
                         $existingImpresora->update([
                             'sede_rcja' => $data['sede_rcja'],
                             'tipo' => $data['tipo'],
-                            'num_contrato' => $data['num_contrato'],
                             'organismo' => $data['organismo'] ?? null,
+                            'contrato' => $data['contrato'],
                             'descripcion' => $data['descripcion'] ?? null,
+                            'num_serie' => $data['num_serie'],
                         ]);
                     } else {
                         // Create new record
@@ -196,9 +195,10 @@ class ImpresoraController extends Controller
                             'ip' => $data['ip'],
                             'sede_rcja' => $data['sede_rcja'],
                             'tipo' => $data['tipo'],
-                            'num_contrato' => $data['num_contrato'],
                             'organismo' => $data['organismo'] ?? null,
+                            'contrato' => $data['contrato'], // Corregido de num_contrato a contrato
                             'descripcion' => $data['descripcion'] ?? null,
+                            'num_serie' => $data['num_serie'],
                         ]);
                     }
 
@@ -208,7 +208,6 @@ class ImpresoraController extends Controller
                 }
             }
 
-            // Reemplaza la parte final de la función importar con esto:
             $response = [
                 'message' => "Importación completada. {$importedCount} registros procesados correctamente."
             ];

@@ -1,4 +1,4 @@
-ip,sede_rcja,tipo,num_contrato,organismo,descripcion
-10.66.128.82,CHAP-COR-001,1,Contrato 1,Delegacion de Hacienda,Impresora a color HP
-10.66.128.81,CHAP-COR-001,1,Contrato 1,Delegacion de Hacienda,Impresora a color HP
+ip,sede_rcja,tipo,contrato,organismo,descripcion,num_serie
+10.66.128.82,CHAP-COR-001,1,Contrato 1,Delegacion de Hacienda,Impresora a color HP,X123456789
+10.66.128.81,CHAP-COR-001,1,Contrato 1,Delegacion de Hacienda,Impresora a color HP,X123456781
 
