@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Impresora;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Http\Requests\ImpresoraRequest;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Validator;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ImpresoraController extends Controller
 {
@@ -243,4 +245,17 @@ class ImpresoraController extends Controller
     {
         return view('impresora.importar');
     }
+
+
+
+    public function exportarPDF()
+    {
+        $impresoras = Impresora::all();
+        $today = Carbon::today()->toDateString();
+
+        return Pdf::loadView('impresora.pdfAll', compact('impresoras'))
+            ->setPaper('a4', 'landscape')
+            ->download("impresoras_$today.pdf");
+    }
+
 }

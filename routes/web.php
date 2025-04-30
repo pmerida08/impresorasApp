@@ -21,6 +21,8 @@ Route::get('/impresoras/{id}/historico', [ImpresoraHistoricoController::class, '
     ->name('impresoras.historico');
 Route::get('/impresoras/{id}/paginas-rango', [ImpresoraHistoricoController::class, 'mostrarPaginasEnRango'])
     ->name('impresoras.paginas.rango');
+Route::get('/impresoras/pdf', [ImpresoraController::class, 'exportarPDF'])->name('impresoras.pdfAll');
+
 
 // Resource route should be after all custom routes
 Route::resource('impresoras', ImpresoraController::class);

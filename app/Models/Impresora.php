@@ -50,6 +50,16 @@ class Impresora extends Model
         'color'
     ];
 
+    private function configureSnmp()
+    {
+        if (function_exists('\snmp_set_quick_print')) {
+            \snmp_set_quick_print(true);
+        }
+        if (function_exists('\snmp_set_timeout')) {
+            \snmp_set_timeout(2);
+        }
+    }
+
     public function historicos()
     {
         return $this->hasMany(ImpresoraHistorico::class);
@@ -58,56 +68,55 @@ class Impresora extends Model
     public function getModeloAttribute()
     {
         $host = $this->attributes['ip'];
-        $community = "public"; // Comunidad SNMP (por defecto suele ser "public")
+        $community = "public";
         $oid = ".1.3.6.1.2.1.25.3.2.1.3.1";
 
         try {
-            // Consultar SNMP
-            $model = @snmpget($host, $community, $oid);
+            
+            $model = @\snmpget($host, $community, $oid);
 
-            // Verificar si no hay respuesta o la respuesta es inválida
             if ($model === false) {
-                return "No responde"; // Retorna un mensaje si no hay respuesta
+                return "No responde";
             }
 
-            return substr(explode(":", $model)[1], 2, -1); // Retorna el modelo de la impresora
+            return substr(explode(":", $model)[1], 2, -1);
         } catch (\Exception $e) {
-            return "Error SNMP"; // En caso de excepciones, retorna un mensaje de error
+            return "Error SNMP";
         }
     }
 
     public function getPaginasTotalAttribute()
     {
         $host = $this->attributes['ip'];
-        $community = "public"; // Comunidad SNMP (por defecto suele ser "public")
+        $community = "public";
         $oid = ".1.3.6.1.2.1.43.10.2.1.4.1.1";
 
         try {
-            // Consultar SNMP
-            $model = @snmpget($host, $community, $oid);
+            
+            $model = @\snmpget($host, $community, $oid);
 
-            // Verificar si no hay respuesta o la respuesta es inválida
             if ($model === false) {
-                return 0; // Retorna 0 si no hay respuesta
+                return 0;
             }
 
-            return explode(":", $model)[1]; // Retorna el número total de páginas
+            return explode(":", $model)[1];
         } catch (\Exception $e) {
-            return 0; // Retorna 0 en caso de error de SNMP
+            return 0;
         }
     }
+
     public function getPaginasBWAttribute()
     {
         $host = $this->attributes['ip'];
         $community = "public";
         $oids = [
             ".1.3.6.1.4.1.11.2.3.9.4.2.1.4.1.2.6.0",
-
         ];
 
         try {
+            
             foreach ($oids as $oid) {
-                $model = @snmpget($host, $community, $oid);
+                $model = @\snmpget($host, $community, $oid);
                 if ($model !== false) {
                     return intval(explode(":", $model)[1]);
                 }
@@ -128,8 +137,9 @@ class Impresora extends Model
         ];
 
         try {
+            
             foreach ($oids as $oid) {
-                $model = @snmpget($host, $community, $oid);
+                $model = @\snmpget($host, $community, $oid);
                 if ($model !== false) {
                     return intval(explode(":", $model)[1]);
                 }
@@ -140,33 +150,11 @@ class Impresora extends Model
         }
     }
 
-    // public function getNumSerieAttribute()
-    // {
-    //     $host = $this->attributes['ip'];
-    //     $community = "public"; // Comunidad SNMP (por defecto suele ser "public")
-    //     $oid = ".1.3.6.1.2.1.43.5.1.1.17.1";
-
-    //     try {
-    //         // Consultar SNMP
-    //         $model = @snmpget($host, $community, $oid);
-
-    //         // Verificar si no hay respuesta o la respuesta es inválida
-    //         if ($model === false) {
-    //             return "No responde"; // Retorna un mensaje si no hay respuesta
-    //         }
-
-    //         return substr(explode(":", $model)[1], 2, -1); // Retorna el número de serie
-    //     } catch (\Exception $e) {
-    //         return "Error SNMP"; // Retorna un mensaje en caso de error
-    //     }
-    // }
-
     public function getMacAttribute()
     {
         $host = $this->attributes['ip'];
-        $community = "public"; // Comunidad SNMP (por defecto suele ser "public")
+        $community = "public";
 
-        // Lista de posibles interfaces para consultar la MAC
         $oids = [
             ".1.3.6.1.2.1.2.2.1.6.1",
             ".1.3.6.1.2.1.2.2.1.6.2",
@@ -174,21 +162,19 @@ class Impresora extends Model
         ];
 
         try {
+            
             foreach ($oids as $oid) {
-                $snmpResult = @snmpget($host, $community, $oid);
+                $snmpResult = @\snmpget($host, $community, $oid);
 
-                // Verificar si no hay respuesta de SNMP
                 if (!$snmpResult) {
-                    continue; // Intenta con el siguiente OID
+                    continue;
                 }
 
-                // Extraer la parte con la MAC address (después de "STRING:")
                 $parts = explode(":", $snmpResult, 2);
                 if (count($parts) < 2) {
-                    continue; // Formato inesperado
+                    continue;
                 }
 
-                // Limpiar y formatear la MAC address
                 $rawMac = trim($parts[1]);
                 $macParts = array_filter(array_map('trim', explode(' ', $rawMac)));
                 $formattedMac = strtoupper(implode(':', $macParts));
@@ -197,20 +183,21 @@ class Impresora extends Model
                 }
             }
 
-            return "No responde"; // Si no se encuentra una MAC válida
+            return "No responde";
         } catch (\Exception $e) {
-            return "Error SNMP"; // En caso de excepción, retornar un mensaje de error
+            return "Error SNMP";
         }
     }
 
-    public function actualizarNumSerie() // Para actualizar el número de serie
+    public function actualizarNumSerie()
     {
         $host = $this->attributes['ip'];
         $community = "public";
         $oid = ".1.3.6.1.2.1.43.5.1.1.17.1";
 
         try {
-            $model = @snmpget($host, $community, $oid);
+            
+            $model = @\snmpget($host, $community, $oid);
 
             if ($model === false) {
                 $this->num_serie = "No responde";
@@ -223,5 +210,4 @@ class Impresora extends Model
 
         $this->save();
     }
-
 }

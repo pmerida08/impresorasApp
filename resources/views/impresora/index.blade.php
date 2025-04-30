@@ -23,6 +23,10 @@
                                 <a href="{{ route('impresoras.importar.form') }}" class="btn btn-success">
                                     <i class="fas fa-file-import"></i> Importar CSV
                                 </a>
+                                <a href="{{ route('impresoras.pdfAll') }}" class="btn btn-danger" target="_blank" alt="Puede tardar un poco...">
+                                    <i class="fas fa-file-pdf"></i> Descargar PDF (Puede tardar...)
+                                </a>
+
                             </div>
                         </div>
                     </div>
