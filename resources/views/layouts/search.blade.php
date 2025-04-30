@@ -1,53 +1,61 @@
 <div class="row mb-3">
-    <div class="col-md-6">
+    <div class="col-md-6 d-flex">
         <input type="text" id="searchInput" class="form-control" placeholder="Buscar impresora">
+        <button class="btn btn-secondary ms-2 position-relative" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">
+            <i class="bi bi-funnel "></i>
+            {{-- <span id="activeFilterLabel" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary small" style="font-size: 0.65em;">
+                Tipo
+            </span> --}}
+        </button>
     </div>
 
-    <div class="mt-2">
-        <div class="d-flex flex-wrap">
-            <div class="form-check me-3">
-                <input class="form-check-input" type="radio" name="filter" id="filterTipo" value="tipo" checked>
-                <label class="form-check-label" for="filterTipo">Tipo</label>
-            </div>
+    <div class="collapse mt-2" id="filterCollapse">
+        <div class="card card-body">
+            <div class="d-flex flex-wrap">
+                <div class="form-check me-3">
+                    <input class="form-check-input" type="radio" name="filter" id="filterTipo" value="tipo" checked>
+                    <label class="form-check-label" for="filterTipo">Tipo</label>
+                </div>
 
-            <div class="form-check me-3">
-                <input class="form-check-input" type="radio" name="filter" id="filterUbicacion" value="ubicacion">
-                <label class="form-check-label" for="filterUbicacion">Ubicación</label>
-            </div>
+                <div class="form-check me-3">
+                    <input class="form-check-input" type="radio" name="filter" id="filterUbicacion" value="ubicacion">
+                    <label class="form-check-label" for="filterUbicacion">Ubicación</label>
+                </div>
 
-            <div class="form-check me-3">
-                <input class="form-check-input" type="radio" name="filter" id="filterIP" value="ip">
-                <label class="form-check-label" for="filterIP">IP</label>
-            </div>
+                <div class="form-check me-3">
+                    <input class="form-check-input" type="radio" name="filter" id="filterIP" value="ip">
+                    <label class="form-check-label" for="filterIP">IP</label>
+                </div>
 
-            <div class="form-check me-3">
-                <input class="form-check-input" type="radio" name="filter" id="filterUsuario" value="usuario">
-                <label class="form-check-label" for="filterUsuario">Usuario</label>
-            </div>
+                <div class="form-check me-3">
+                    <input class="form-check-input" type="radio" name="filter" id="filterUsuario" value="usuario">
+                    <label class="form-check-label" for="filterUsuario">Usuario</label>
+                </div>
 
-            <div class="form-check me-3">
-                <input class="form-check-input" type="radio" name="filter" id="filterSede" value="sede_rcja">
-                <label class="form-check-label" for="filterSede">Sede RCJA</label>
-            </div>
+                <div class="form-check me-3">
+                    <input class="form-check-input" type="radio" name="filter" id="filterSede" value="sede_rcja">
+                    <label class="form-check-label" for="filterSede">Sede RCJA</label>
+                </div>
 
-            <div class="form-check me-3">
-                <input class="form-check-input" type="radio" name="filter" id="filterOrganismo" value="organismo">
-                <label class="form-check-label" for="filterOrganismo">Organismo</label>
-            </div>
+                <div class="form-check me-3">
+                    <input class="form-check-input" type="radio" name="filter" id="filterOrganismo" value="organismo">
+                    <label class="form-check-label" for="filterOrganismo">Organismo</label>
+                </div>
 
-            <div class="form-check me-3">
-                <input class="form-check-input" type="radio" name="filter" id="filterContrato" value="contrato">
-                <label class="form-check-label" for="filterContrato">Contrato</label>
-            </div>
+                <div class="form-check me-3">
+                    <input class="form-check-input" type="radio" name="filter" id="filterContrato" value="contrato">
+                    <label class="form-check-label" for="filterContrato">Contrato</label>
+                </div>
 
-            <div class="form-check me-3">
-                <input class="form-check-input" type="radio" name="filter" id="filterNumSerie" value="num_serie">
-                <label class="form-check-label" for="filterNumSerie">Nº de serie</label>
-            </div>
+                <div class="form-check me-3">
+                    <input class="form-check-input" type="radio" name="filter" id="filterNumSerie" value="num_serie">
+                    <label class="form-check-label" for="filterNumSerie">Nº de serie</label>
+                </div>
 
-            <div class="form-check me-3">
-                <input class="form-check-input" type="radio" name="filter" id="filterColor" value="color">
-                <label class="form-check-label" for="filterColor">Color</label>
+                <div class="form-check me-3">
+                    <input class="form-check-input" type="radio" name="filter" id="filterColor" value="color">
+                    <label class="form-check-label" for="filterColor">Color</label>
+                </div>
             </div>
         </div>
     </div>
@@ -111,8 +119,16 @@
         const searchResultsBody = document.getElementById('searchResultsBody');
         const noResults = document.getElementById('noResults');
         const filterRadios = document.querySelectorAll('input[name="filter"]');
+        const activeFilterLabel = document.getElementById('activeFilterLabel');
         let searchTimeout;
         let currentFilter = 'tipo';
+
+        function updateActiveFilterLabel(value) {
+            const selectedFilter = document.querySelector(`input[value="${value}"]`);
+            if (selectedFilter) {
+                activeFilterLabel.textContent = selectedFilter.nextElementSibling.textContent;
+            }
+        }
 
         function confirmDelete(event) {
             event.preventDefault();
@@ -198,6 +214,7 @@
         filterRadios.forEach(radio => {
             radio.addEventListener('change', function() {
                 currentFilter = this.value;
+                updateActiveFilterLabel(this.value);
                 performSearch();
             });
         });
