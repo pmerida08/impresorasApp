@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 09-04-2025 a las 12:24:44
+-- Tiempo de generación: 05-05-2025 a las 06:16:38
 -- Versión del servidor: 8.0.41-0ubuntu0.24.04.1
 -- Versión de PHP: 8.3.6
 
@@ -94,19 +94,18 @@ CREATE TABLE `impresoras` (
   `usuario` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `ip` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `nombre_reserva_dhcp` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `observaciones` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `nombre_cola_hacos` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `descripcion` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `nombre_cola_hacos` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `sede_rcja` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `organismo` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `contrato` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `num_serie` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `color` tinyint(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- RELACIONES PARA LA TABLA `impresoras`:
 --
-
---
--- Volcado de datos para la tabla `impresoras`
---
-
-
 
 -- --------------------------------------------------------
 
@@ -129,11 +128,6 @@ CREATE TABLE `impresora_historicos` (
 --   `impresora_id`
 --       `impresoras` -> `id`
 --
-
---
--- Volcado de datos para la tabla `impresora_historicos`
---
-
 
 -- --------------------------------------------------------
 
@@ -361,13 +355,13 @@ ALTER TABLE `failed_jobs`
 -- AUTO_INCREMENT de la tabla `impresoras`
 --
 ALTER TABLE `impresoras`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `impresora_historicos`
 --
 ALTER TABLE `impresora_historicos`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `jobs`
@@ -379,13 +373,13 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT de la tabla `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT de la tabla `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
 
 --
 -- Restricciones para tablas volcadas
