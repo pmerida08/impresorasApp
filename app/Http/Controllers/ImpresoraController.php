@@ -251,7 +251,7 @@ class ImpresoraController extends Controller
     public function exportarPDF()
     {
         $impresoras = Impresora::all();
-        $today = Carbon::today()->toDateString();
+        $today = Carbon::today()->format('d-m-Y');
 
         return Pdf::loadView('impresora.pdfAll', compact('impresoras'))
             ->setPaper('a4', 'landscape')

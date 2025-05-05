@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container">
-        <h2>Histórico de impresora: {{ $impresora->observaciones }}</h2>
+        <h2>Histórico de impresora: {{ $impresora->modelo }}</h2>
 
         {{-- Formulario de selección de fechas --}}
         <form method="GET" action="{{ route('impresoras.paginas.rango', ['id' => $impresora->id]) }}" class="mb-4">

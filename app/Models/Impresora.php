@@ -50,20 +50,16 @@ class Impresora extends Model
         'color'
     ];
 
-    private function configureSnmp()
-    {
-        if (function_exists('\snmp_set_quick_print')) {
-            \snmp_set_quick_print(true);
-        }
-        if (function_exists('\snmp_set_timeout')) {
-            \snmp_set_timeout(2);
-        }
-    }
-
     public function historicos()
     {
         return $this->hasMany(ImpresoraHistorico::class);
     }
+
+    public function datosSnmp()
+    {
+        return $this->hasOne(ImpresoraDatosSnmp::class);
+    }
+
 
     public function getModeloAttribute()
     {
@@ -72,7 +68,7 @@ class Impresora extends Model
         $oid = ".1.3.6.1.2.1.25.3.2.1.3.1";
 
         try {
-            
+
             $model = @\snmpget($host, $community, $oid);
 
             if ($model === false) {
@@ -92,7 +88,7 @@ class Impresora extends Model
         $oid = ".1.3.6.1.2.1.43.10.2.1.4.1.1";
 
         try {
-            
+
             $model = @\snmpget($host, $community, $oid);
 
             if ($model === false) {
@@ -114,7 +110,7 @@ class Impresora extends Model
         ];
 
         try {
-            
+
             foreach ($oids as $oid) {
                 $model = @\snmpget($host, $community, $oid);
                 if ($model !== false) {
@@ -137,7 +133,7 @@ class Impresora extends Model
         ];
 
         try {
-            
+
             foreach ($oids as $oid) {
                 $model = @\snmpget($host, $community, $oid);
                 if ($model !== false) {
@@ -162,7 +158,7 @@ class Impresora extends Model
         ];
 
         try {
-            
+
             foreach ($oids as $oid) {
                 $snmpResult = @\snmpget($host, $community, $oid);
 
@@ -196,7 +192,7 @@ class Impresora extends Model
         $oid = ".1.3.6.1.2.1.43.5.1.1.17.1";
 
         try {
-            
+
             $model = @\snmpget($host, $community, $oid);
 
             if ($model === false) {
