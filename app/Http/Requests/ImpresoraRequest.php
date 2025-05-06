@@ -32,7 +32,7 @@ class ImpresoraRequest extends FormRequest
             'nombre_cola_hacos' => 'nullable|string|max:255',
             'sede_rcja' => 'required|string|max:255',
             'contrato' => 'required|string|max:255',
-            'num_serie' => 'required|string|max:24',
+            'num_serie' => 'null|string|max:24',
             'color' => 'required|int|max:1',
         ];
     }

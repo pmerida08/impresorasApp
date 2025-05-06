@@ -47,7 +47,6 @@ class Impresora extends Model
         'nombre_cola_hacos',
         'sede_rcja',
         'contrato',
-        'num_serie',
         'color'
     ];
 
@@ -83,7 +82,7 @@ class Impresora extends Model
         return $this->datosSnmp?->paginas_color ?? 0;
     }
 
-    public function getNumSerieSnmpAttribute()
+    public function getNumSerieAttribute()
     {
         return $this->datosSnmp?->num_serie ?? 'No registrado';
     }

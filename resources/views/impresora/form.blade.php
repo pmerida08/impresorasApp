@@ -42,12 +42,12 @@
             {!! $errors->first('contrato', '<div class="invalid-feedback" role="alert"><strong>:message</strong></div>') !!}
         </div>
 
-        <div class="form-group mb-2 mb20">
+        {{-- <div class="form-group mb-2 mb20">
             <label for="num_serie" class="form-label">{{ __('Número de Serie') }}</label>
             <input type="text" name="num_serie" class="form-control @error('num_serie') is-invalid @enderror"
                 value="{{ old('num_serie', $impresora?->num_serie) }}" id="num_serie">
             {!! $errors->first('num_serie', '<div class="invalid-feedback" role="alert"><strong>:message</strong></div>') !!}
-        </div>
+        </div> --}}
 
         <div class="form-group mb-2 mb20">
             <label for="organismo" class="form-label">{{ __('Organismo') }}</label>
