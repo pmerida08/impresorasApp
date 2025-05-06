@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 05-05-2025 a las 06:16:38
+-- Tiempo de generación: 06-05-2025 a las 11:35:02
 -- Versión del servidor: 8.0.41-0ubuntu0.24.04.1
 -- Versión de PHP: 8.3.6
 
@@ -36,10 +36,6 @@ CREATE TABLE `cache` (
   `expiration` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- RELACIONES PARA LA TABLA `cache`:
---
-
 -- --------------------------------------------------------
 
 --
@@ -52,10 +48,6 @@ CREATE TABLE `cache_locks` (
   `owner` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `expiration` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- RELACIONES PARA LA TABLA `cache_locks`:
---
 
 -- --------------------------------------------------------
 
@@ -73,10 +65,6 @@ CREATE TABLE `failed_jobs` (
   `exception` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
   `failed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- RELACIONES PARA LA TABLA `failed_jobs`:
---
 
 -- --------------------------------------------------------
 
@@ -103,9 +91,25 @@ CREATE TABLE `impresoras` (
   `color` tinyint(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- --------------------------------------------------------
+
 --
--- RELACIONES PARA LA TABLA `impresoras`:
+-- Estructura de tabla para la tabla `impresora_datos_snmp`
 --
+
+DROP TABLE IF EXISTS `impresora_datos_snmp`;
+CREATE TABLE `impresora_datos_snmp` (
+  `id` bigint UNSIGNED NOT NULL,
+  `impresora_id` bigint UNSIGNED NOT NULL,
+  `mac` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `paginas_total` int UNSIGNED DEFAULT '0',
+  `paginas_bw` int UNSIGNED DEFAULT '0',
+  `paginas_color` int UNSIGNED DEFAULT '0',
+  `num_serie` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `modelo` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -123,12 +127,6 @@ CREATE TABLE `impresora_historicos` (
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- RELACIONES PARA LA TABLA `impresora_historicos`:
---   `impresora_id`
---       `impresoras` -> `id`
---
-
 -- --------------------------------------------------------
 
 --
@@ -145,10 +143,6 @@ CREATE TABLE `jobs` (
   `available_at` int UNSIGNED NOT NULL,
   `created_at` int UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- RELACIONES PARA LA TABLA `jobs`:
---
 
 -- --------------------------------------------------------
 
@@ -170,10 +164,6 @@ CREATE TABLE `job_batches` (
   `finished_at` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- RELACIONES PARA LA TABLA `job_batches`:
---
-
 -- --------------------------------------------------------
 
 --
@@ -188,13 +178,30 @@ CREATE TABLE `migrations` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- RELACIONES PARA LA TABLA `migrations`:
---
-
---
 -- Volcado de datos para la tabla `migrations`
 --
 
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
+(1, '0001_01_01_000000_create_users_table', 1),
+(2, '0001_01_01_000001_create_cache_table', 1),
+(3, '0001_01_01_000002_create_jobs_table', 1),
+(4, '2025_04_01_104310_create_impresoras_table', 2),
+(5, '2025_04_01_191250_update_impresoras_table', 3),
+(6, '2025_04_01_200859_rename_copias_semana_to_copias_mes', 4),
+(7, '2025_04_07_104216_update_impresoras_table', 5),
+(8, '2025_04_07_104509_update_impresoras_table', 6),
+(9, '2025_04_07_104615_update_impresoras_tab', 7),
+(10, '2025_04_08_080523_create_impresions_table', 8),
+(11, '2025_04_08_082338_create_impresora_historicos_table', 9),
+(12, '2025_04_08_104036_remove_mac_from_impresoras_table', 10),
+(13, '2025_04_23_131740_add_sede_contrato_color_to_impresoras_table', 11),
+(14, '2025_04_25_100039_rename_sede_to_sede_rcja_in_impresoras_table', 12),
+(15, '2025_04_25_101641_add_organismo_to_impresoras_table', 13),
+(16, '2025_04_25_102402_rename_observaciones_to_descripcion_in_impresoras_table', 14),
+(17, '2025_04_30_104256_rename_num_contrato_and_add_num_serie_to_impresoras_table', 15),
+(18, '2025_05_05_135320_create_impresora_datos_snmp_table', 16),
+(19, '2025_05_05_135531_create_impresora_datos_snmp_table', 17),
+(20, '2025_05_06_082327_add_modelo_to_impresora_datos_snmp_table', 18);
 
 -- --------------------------------------------------------
 
@@ -208,10 +215,6 @@ CREATE TABLE `password_reset_tokens` (
   `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- RELACIONES PARA LA TABLA `password_reset_tokens`:
---
 
 -- --------------------------------------------------------
 
@@ -230,12 +233,11 @@ CREATE TABLE `sessions` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- RELACIONES PARA LA TABLA `sessions`:
---
-
---
 -- Volcado de datos para la tabla `sessions`
 --
+
+INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
+('mmT0KXZAgv3wnia6tOT9N3ilv4OVQEPqU5SzM4FX', 2, '10.66.128.154', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoibnE3RTFYdHZxcmVQSXQ1QkJBSll1eGdHTXJXRkVXbXBlNzZHWjRjZyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NzA6Imh0dHBzOi8vYWRhY29yc2VydmVyMDEuZHBoYWNvLmNlaC5qdW50YS1hbmRhbHVjaWEuZXMvaW1wcmVzb3Jhcz9wYWdlPTMiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToyO3M6NDoiYXV0aCI7YToxOntzOjIxOiJwYXNzd29yZF9jb25maXJtZWRfYXQiO2k6MTc0NjUxMjAzOTt9fQ==', 1746531094);
 
 -- --------------------------------------------------------
 
@@ -254,16 +256,6 @@ CREATE TABLE `users` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- RELACIONES PARA LA TABLA `users`:
---
-
---
--- Volcado de datos para la tabla `users`
---
-
-
 
 --
 -- Índices para tablas volcadas
@@ -293,6 +285,13 @@ ALTER TABLE `failed_jobs`
 --
 ALTER TABLE `impresoras`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `impresora_datos_snmp`
+--
+ALTER TABLE `impresora_datos_snmp`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `impresora_datos_snmp_impresora_id_foreign` (`impresora_id`);
 
 --
 -- Indices de la tabla `impresora_historicos`
@@ -358,6 +357,12 @@ ALTER TABLE `impresoras`
   MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `impresora_datos_snmp`
+--
+ALTER TABLE `impresora_datos_snmp`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `impresora_historicos`
 --
 ALTER TABLE `impresora_historicos`
@@ -373,23 +378,94 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT de la tabla `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT de la tabla `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- Restricciones para tablas volcadas
 --
 
 --
+-- Filtros para la tabla `impresora_datos_snmp`
+--
+ALTER TABLE `impresora_datos_snmp`
+  ADD CONSTRAINT `impresora_datos_snmp_impresora_id_foreign` FOREIGN KEY (`impresora_id`) REFERENCES `impresoras` (`id`) ON DELETE CASCADE;
+
+--
 -- Filtros para la tabla `impresora_historicos`
 --
 ALTER TABLE `impresora_historicos`
   ADD CONSTRAINT `impresora_historicos_impresora_id_foreign` FOREIGN KEY (`impresora_id`) REFERENCES `impresoras` (`id`) ON DELETE CASCADE;
+
+
+--
+-- Metadatos
+--
+USE `phpmyadmin`;
+
+--
+-- Metadatos para la tabla cache
+--
+
+--
+-- Metadatos para la tabla cache_locks
+--
+
+--
+-- Metadatos para la tabla failed_jobs
+--
+
+--
+-- Metadatos para la tabla impresoras
+--
+
+--
+-- Volcado de datos para la tabla `pma__table_uiprefs`
+--
+
+INSERT INTO `pma__table_uiprefs` (`username`, `db_name`, `table_name`, `prefs`, `last_update`) VALUES
+('phpmyadmin', 'impresorasproyecto', 'impresoras', '{\"sorted_col\":\"`tipo` ASC\"}', '2025-05-06 11:22:05');
+
+--
+-- Metadatos para la tabla impresora_datos_snmp
+--
+
+--
+-- Metadatos para la tabla impresora_historicos
+--
+
+--
+-- Metadatos para la tabla jobs
+--
+
+--
+-- Metadatos para la tabla job_batches
+--
+
+--
+-- Metadatos para la tabla migrations
+--
+
+--
+-- Metadatos para la tabla password_reset_tokens
+--
+
+--
+-- Metadatos para la tabla sessions
+--
+
+--
+-- Metadatos para la tabla users
+--
+
+--
+-- Metadatos para la base de datos impresorasproyecto
+--
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
