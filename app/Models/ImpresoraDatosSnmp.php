@@ -15,6 +15,7 @@ class ImpresoraDatosSnmp extends Model
         'paginas_bw',
         'paginas_color',
         'num_serie',
+        'modelo',
     ];
 
     public function impresora()

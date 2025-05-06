@@ -32,7 +32,12 @@ class ActualizarSnmpImpresoras extends Command
 
         foreach ($impresoras as $impresora) {
             // TODO: Simulación de obtención SNMP, hay un JSON para los métodos
+
+            $modelo = snmpget($impresora->ip, '.1.3.6.1.2.1.25.3.2.1.3.1');
+
+            
             $datosSnmp = [
+                'modelo' => snmpget($impresora->ip, '.1.3.6.1.2.1.25.3.2.1.3.1'),
                 'mac' => snmpget($impresora->ip, '1.3.6.1.x.x.x'),
                 'paginas_total' => snmpget($impresora->ip, '1.3.6.1.x.x.y'),
                 'paginas_bw' => snmpget($impresora->ip, '1.3.6.1.x.x.z'),
