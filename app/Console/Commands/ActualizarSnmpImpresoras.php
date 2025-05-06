@@ -14,7 +14,7 @@ class ActualizarSnmpImpresoras extends Command
      * @var string
      */
     protected $signature = 'impresoras:actualizar-snmp-impresoras';
-    
+
 
     /**
      * The console command description.
@@ -30,29 +30,57 @@ class ActualizarSnmpImpresoras extends Command
     {
         $impresoras = Impresora::all();
 
+        // Cargar JSON con OIDs por marca/modelo
+        $jsonPath = resource_path('oids.json');
+        $community = "public";
+        $oidsPorModelo = json_decode(file_get_contents($jsonPath), true);
+
         foreach ($impresoras as $impresora) {
-            // TODO: Simulación de obtención SNMP, hay un JSON para los métodos
+            $modeloSNMP = @snmpget($impresora->ip, $community, '.1.3.6.1.2.1.25.3.2.1.3.1');
+            $modeloSNMP = trim(str_replace(['"', 'STRING:'], '', $modeloSNMP)); // limpiar
 
-            $modelo = snmpget($impresora->ip, '.1.3.6.1.2.1.25.3.2.1.3.1');
+            $this->info("Modelo SNMP: $modeloSNMP");
 
-            
+            // Detectar marca (puedes afinarlo más)
+            $marcaDetectada = null;
+            foreach ($oidsPorModelo as $marca => $oids) {
+                if (stripos($modeloSNMP, $marca) !== false) {
+                    $marcaDetectada = $marca;
+                    break;
+                }
+            }
+
+            if (!$marcaDetectada) {
+                $this->warn("Marca no reconocida para IP: {$impresora->ip} - Modelo: $modeloSNMP");
+                continue;
+            }
+
+            $oids = $oidsPorModelo[$marcaDetectada];
+
+            // Hacer SNMPGET con los OIDs del modelo detectado
             $datosSnmp = [
-                'modelo' => snmpget($impresora->ip, '.1.3.6.1.2.1.25.3.2.1.3.1'),
-                'mac' => snmpget($impresora->ip, '1.3.6.1.x.x.x'),
-                'paginas_total' => snmpget($impresora->ip, '1.3.6.1.x.x.y'),
-                'paginas_bw' => snmpget($impresora->ip, '1.3.6.1.x.x.z'),
-                'paginas_color' => snmpget($impresora->ip, '1.3.6.1.x.x.k'),
-                'num_serie' => snmpget($impresora->ip, '1.3.6.1.x.x.m'),
+                'modelo' => $modeloSNMP,
+                'mac' => snmpget($impresora->ip, $community, $oids['mac'] ?? ''),
+                'paginas_total' => isset($oids['pagesTotal']) ? explode(":", snmpget($impresora->ip, $community, $oids['pagesTotal']))[1] : 0,
+                'paginas_bw' => isset($oids['pagesBWTotal']) ? explode(":", snmpget($impresora->ip, $community, $oids['pagesBWTotal']))[1] : 0,
+                'paginas_color' => isset($oids['pagesColorTotal']) ? explode(":", snmpget($impresora->ip, $community, $oids['pagesColorTotal']))[1] : 0,
+                'num_serie' => snmpget($impresora->ip, $community, $oids['numSerie'] ?? ''),
             ];
+
+            // Limpiar resultados (quitar "STRING: ..." y comillas dobles)
+            foreach ($datosSnmp as $k => $v) {
+                if (is_string($v)) {
+                    $datosSnmp[$k] = trim(str_replace(['"', 'STRING:'], '', $v));
+                }
+            }
 
             ImpresoraDatosSnmp::updateOrCreate(
                 ['impresora_id' => $impresora->id],
                 $datosSnmp
             );
+
+            $this->info("Actualizada impresora {$impresora->ip} con modelo {$modeloSNMP}");
         }
-
-        $this->info('Datos SNMP actualizados.');
-
-        //TODO: Descomenta el crontab para que funcione
     }
+
 }

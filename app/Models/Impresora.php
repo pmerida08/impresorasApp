@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\ImpresoraDatosSnmp;
 
 /**
  * Class Impresora
@@ -50,162 +51,40 @@ class Impresora extends Model
         'color'
     ];
 
-    public function historicos()
-    {
-        return $this->hasMany(ImpresoraHistorico::class);
-    }
-
     public function datosSnmp()
     {
-        return $this->hasOne(ImpresoraDatosSnmp::class);
+        return $this->hasOne(ImpresoraDatosSnmp::class, 'impresora_id', 'id');
     }
 
 
+    // Accesores desde datos SNMP
     public function getModeloAttribute()
     {
-        $host = $this->attributes['ip'];
-        $community = "public";
-        $oid = ".1.3.6.1.2.1.25.3.2.1.3.1";
-
-        try {
-
-            $model = @\snmpget($host, $community, $oid);
-
-            if ($model === false) {
-                return "No responde";
-            }
-
-            return substr(explode(":", $model)[1], 2, -1);
-        } catch (\Exception $e) {
-            return "Error SNMP";
-        }
-    }
-
-    public function getPaginasTotalAttribute()
-    {
-        $host = $this->attributes['ip'];
-        $community = "public";
-        $oid = ".1.3.6.1.2.1.43.10.2.1.4.1.1";
-
-        try {
-
-            $model = @\snmpget($host, $community, $oid);
-
-            if ($model === false) {
-                return 0;
-            }
-
-            return explode(":", $model)[1];
-        } catch (\Exception $e) {
-            return 0;
-        }
-    }
-
-    public function getPaginasBWAttribute()
-    {
-        $host = $this->attributes['ip'];
-        $community = "public";
-        $oids = [
-            ".1.3.6.1.4.1.11.2.3.9.4.2.1.4.1.2.6.0",
-            ".1.3.6.1.4.1.1248.1.2.2.27.1.1.3.1.1"
-        ];
-
-        try {
-
-            foreach ($oids as $oid) {
-                $model = @\snmpget($host, $community, $oid);
-                if ($model !== false) {
-                    return intval(explode(":", $model)[1]);
-                }
-            }
-            return "No responde";
-        } catch (\Exception $e) {
-            return "Error SNMP";
-        }
-    }
-
-    public function getPaginasColorAttribute()
-    {
-        $host = $this->attributes['ip'];
-        $community = "public";
-        $oids = [
-            ".1.3.6.1.4.1.11.2.3.9.4.2.1.4.1.2.7.0",
-            ".1.3.6.1.4.1.1248.1.2.2.6.1.1.5.1.2", // HP PAGEWIDE COLOR        
-            ".1.3.6.1.2.1.43.10.2.1.5.1.1",
-        ];
-
-        try {
-
-            foreach ($oids as $oid) {
-                $model = @\snmpget($host, $community, $oid);
-                if ($model !== false) {
-                    return intval(explode(":", $model)[1]);
-                }
-            }
-            return "No responde";
-        } catch (\Exception $e) {
-            return "Error SNMP";
-        }
+        return $this->datosSnmp?->modelo ?? 'Desconocido';
     }
 
     public function getMacAttribute()
     {
-        $host = $this->attributes['ip'];
-        $community = "public";
-
-        $oids = [
-            ".1.3.6.1.2.1.2.2.1.6.1",
-            ".1.3.6.1.2.1.2.2.1.6.2",
-            ".1.3.6.1.2.1.2.2.1.6.3",
-        ];
-
-        try {
-
-            foreach ($oids as $oid) {
-                $snmpResult = @\snmpget($host, $community, $oid);
-
-                if (!$snmpResult) {
-                    continue;
-                }
-
-                $parts = explode(":", $snmpResult, 2);
-                if (count($parts) < 2) {
-                    continue;
-                }
-
-                $rawMac = trim($parts[1]);
-                $macParts = array_filter(array_map('trim', explode(' ', $rawMac)));
-                $formattedMac = strtoupper(implode(':', $macParts));
-                if (!empty($formattedMac)) {
-                    return $formattedMac;
-                }
-            }
-
-            return "No responde";
-        } catch (\Exception $e) {
-            return "Error SNMP";
-        }
+        return $this->datosSnmp?->mac ?? 'No registrado';
     }
 
-    public function actualizarNumSerie()
+    public function getPaginasTotalAttribute()
     {
-        $host = $this->attributes['ip'];
-        $community = "public";
-        $oid = ".1.3.6.1.2.1.43.5.1.1.17.1";
+        return $this->datosSnmp?->paginas_total ?? 0;
+    }
 
-        try {
+    public function getPaginasBWAttribute()
+    {
+        return $this->datosSnmp?->paginas_bw ?? 0;
+    }
 
-            $model = @\snmpget($host, $community, $oid);
+    public function getPaginasColorAttribute()
+    {
+        return $this->datosSnmp?->paginas_color ?? 0;
+    }
 
-            if ($model === false) {
-                $this->num_serie = "No responde";
-            } else {
-                $this->num_serie = substr(explode(":", $model)[1], 2, -1);
-            }
-        } catch (\Exception $e) {
-            $this->num_serie = "Error SNMP";
-        }
-
-        $this->save();
+    public function getNumSerieSnmpAttribute()
+    {
+        return $this->datosSnmp?->num_serie ?? 'No registrado';
     }
 }
