@@ -78,7 +78,7 @@
                     <td>{{ $impresora->sede_rcja }}</td>
                     <td>{{ $impresora->organismo }}</td>
                     <td>{{ $impresora->contrato }}</td>
-                    <td>{{ $impresora->numero_serie }}</td>
+                    <td>{{ $impresora->num_serie }}</td>
                     <td>{{ $impresora->color ? 'Sí' : 'No' }}</td>
                     @if($start_date && $end_date)
                         <td style="text-align: right;">{{ number_format($impresora->paginas_totales, 0, ',', '.') }}</td>
