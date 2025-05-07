@@ -192,7 +192,8 @@ crontab -e
 
 2. Añade la siguiente línea:
 ```bash
-* * * * * php /ruta/a/tu/proyecto/artisan schedule:run >> /dev/null 2>&1
+0 * * * * /usr/bin/php /var/www/html/impresorasCrud/artisan impresoras:actualizar_paginas >> /dev/null 2>&1
+0 * * * * /usr/bin/php /var/www/html/impresorasCrud/artisan impresoras:actualizar-snmp-impresoras >> /dev/null 2>&1
 ```
 
 ---
