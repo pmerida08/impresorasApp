@@ -58,6 +58,14 @@
                     <input class="form-check-input" type="radio" name="filter" id="filterColor" value="color">
                     <label class="form-check-label" for="filterColor">Color</label>
                 </div>
+
+                {{-- <div class="form-check me-3">
+                    <input class="form-check-input" type="radio" name="filter" id="filterActivo" value="activo">
+                    <label class="form-check-label" for="filterActivo">Activo</label>
+                </div> --}}
+            </div>
+            <div class="mt-2">
+                <strong>Filtro activo:</strong> <span id="activeFilterLabel">Tipo</span>
             </div>
         </div>
     </div>
@@ -96,6 +104,24 @@
                 .table th:last-child {
                     text-align: right;
                 }
+
+                .estado-circle {
+                    display: inline-block;
+                    width: 12px;
+                    height: 12px;
+                    border-radius: 50%;
+                    background-color: gray;
+                }
+
+                .estado-circle.activo {
+                    background-color: #28a745;
+                    /* verde */
+                }
+
+                .estado-circle.inactivo {
+                    background-color: #dc3545;
+                    /* rojo */
+                }
             </style>
             <tr>
                 <th class="px-3">Tipo</th>
@@ -107,6 +133,7 @@
                 <th class="px-3">Contrato</th>
                 <th class="px-3">Nº de serie</th>
                 <th class="px-3">Color</th>
+                <th class="px-3">Activo</th>
                 <th class="px-3">Acciones</th>
             </tr>
         </thead>
@@ -121,7 +148,7 @@
         const searchResultsBody = document.getElementById('searchResultsBody');
         const noResults = document.getElementById('noResults');
         const filterRadios = document.querySelectorAll('input[name="filter"]');
-        const activeFilterLabel = document.getElementById('activeFilterLabel');
+
         let searchTimeout;
         let currentFilter = 'tipo';
 
@@ -174,12 +201,18 @@
                                     <td class="align-middle">${impresora.sede_rcja ?? ""}</td>
                                     <td class="align-middle">${impresora.organismo ?? ""}</td>
                                     <td class="align-middle">${impresora.contrato ?? ""}</td>
-                                    <td class="align-middle">${impresora.num_serie ?? ""}</td>
+                                    <td class="align-middle">${impresora.num_serie ?? "No registrado"}</td>
                                     <td class="align-middle">${impresora.color ? 'Sí' : 'No'}</td>
+                                    <td class="px-3 text-center">
+                                                <span class="estado-circle ${impresora.activo ? 'activo' : 'inactivo'}" title="${impresora.activo ? 'activo' : 'inactivo'}">
+                                                </span>
+                                    </td>
                                     <td>
+                                        ${impresora.activo ? `
                                         <a href="/impresoras/${impresora.id}" class="btn btn-primary btn-sm" title="Ver detalles">
-                                            <i class="fa fa-fw fa-eye"></i> Ver detalles
-                                        </a>
+                                        <i class="fa fa-fw fa-eye"></i> Ver detalles
+                                        </a>` : ''}
+                                        
                                         <a href="/impresoras/${impresora.id}/edit" class="btn btn-secondary btn-sm" title="Editar">
                                             <i class="fa fa-fw fa-edit"></i> Editar
                                         </a>

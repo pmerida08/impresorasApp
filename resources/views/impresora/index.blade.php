@@ -23,7 +23,8 @@
                                 <a href="{{ route('impresoras.importar.form') }}" class="btn btn-success">
                                     <i class="fas fa-file-import"></i> Importar CSV
                                 </a>
-                                <a href="{{ route('impresoras.pdfAll') }}" class="btn btn-danger" target="_blank" alt="Puede tardar un poco...">
+                                <a href="{{ route('impresoras.pdfAll') }}" class="btn btn-danger" target="_blank"
+                                    alt="Puede tardar un poco...">
                                     <i class="fas fa-file-pdf"></i> Descargar PDF
                                 </a>
 
@@ -73,6 +74,24 @@
                                         .table th:last-child {
                                             text-align: right;
                                         }
+
+                                        .estado-circle {
+                                            display: inline-block;
+                                            width: 12px;
+                                            height: 12px;
+                                            border-radius: 50%;
+                                            background-color: gray;
+                                        }
+
+                                        .estado-circle.activo {
+                                            background-color: #28a745;
+                                            /* verde */
+                                        }
+
+                                        .estado-circle.inactivo {
+                                            background-color: #dc3545;
+                                            /* rojo */
+                                        }
                                     </style>
                                     <tr>
                                         <th class="px-3">Tipo</th>
@@ -84,12 +103,14 @@
                                         <th class="px-3">Organismo</th>
                                         <th class="px-3">Contrato</th>
                                         <th class="px-3">Color</th>
+                                        <th class="px-3">Estado</th>
                                         <th class="px-3">Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($impresoras as $index => $impresora)
                                         <tr>
+
                                             <td>{{ $impresora->tipo }}</td>
                                             <td>{{ $impresora->ubicacion }}</td>
                                             <td>{{ $impresora->ip }}</td>
@@ -99,13 +120,20 @@
                                             <td>{{ $impresora->organismo }}</td>
                                             <td>{{ $impresora->contrato }}</td>
                                             <td>{{ $impresora->color ? 'Sí' : 'No' }}</td>
+                                            <td class="px-3 text-center">
+                                                <span
+                                                    class="estado-circle {{ $impresora->activo ? 'activo' : 'inactivo' }}"
+                                                    title="{{ $impresora->activo ? 'Activa' : 'Inactiva' }}"></span>
+                                            </td>
                                             <td>
                                                 <form action="{{ route('impresoras.destroy', $impresora->id) }}"
                                                     method="POST">
-                                                    <a href="{{ route('impresoras.show', $impresora->id) }}"
-                                                        class="btn btn-primary btn-sm">
-                                                        <i class="fa fa-fw fa-eye"></i> {{ __('Ver detalles') }}
-                                                    </a>
+                                                    @if ($impresora->activo)
+                                                        <a href="{{ route('impresoras.show', $impresora->id) }}"
+                                                            class="btn btn-primary btn-sm">
+                                                            <i class="fa fa-fw fa-eye"></i> {{ __('Ver detalles') }}
+                                                        </a>
+                                                    @endif
                                                     <a href="{{ route('impresoras.edit', $impresora->id) }}"
                                                         class="btn btn-secondary btn-sm">
                                                         <i class="fa fa-fw fa-edit"></i> {{ __('Editar') }}

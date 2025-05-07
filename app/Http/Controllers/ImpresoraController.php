@@ -86,27 +86,66 @@ class ImpresoraController extends Controller
         $query = $request->input('q');
         $sanitizedQuery = str_replace('%', '', $query);
 
-        // Lista de filtros permitidos
-        $allowedFilters = ['tipo', 'ubicacion', 'ip', 'usuario', 'sede_rcja', 'organismo', 'contrato', 'color', 'num_serie'];
+        // Filtros permitidos
+        $allowedFilters = [
+            'tipo',
+            'ubicacion',
+            'ip',
+            'usuario',
+            'sede_rcja',
+            'organismo',
+            'contrato',
+            'color',
+            'activo',
+            'num_serie'
+        ];
 
         if (!in_array($filter, $allowedFilters)) {
             return response()->json([], 400);
         }
 
-        $impresoras = Impresora::query();
+        $impresoras = Impresora::with('datosSnmp');
 
-        if ($filter === 'color') {
-            $impresoras->where('color', 1);
-        } elseif ($filter === 'bw') {
-            $impresoras->where('color', 0);
-        } else {
-            $impresoras->where($filter, 'LIKE', '%' . $sanitizedQuery . '%');
+        switch ($filter) {
+            case 'color':
+                $impresoras->where('color', 1);
+                break;
+            case 'bw':
+                $impresoras->where('color', 0);
+                break;
+            case 'activo':
+                $impresoras->where('activo', 1);
+                break;
+            case 'inactivo':
+                $impresoras->where('activo', 0);
+                break;
+            case 'num_serie':
+                $impresoras->whereHas('datosSnmp', function ($queryBuilder) use ($sanitizedQuery) {
+                    $queryBuilder->where('num_serie', 'LIKE', '%' . $sanitizedQuery . '%');
+                });
+                break;
+            default:
+                $impresoras->where($filter, 'LIKE', '%' . $sanitizedQuery . '%');
+                break;
         }
 
-        $result = $impresoras->select('id', 'tipo', 'ubicacion', 'ip', 'usuario', 'sede_rcja', 'organismo', 'contrato', 'num_serie', 'color')->get();
+        $result = $impresoras->get([
+            'id',
+            'tipo',
+            'ubicacion',
+            'ip',
+            'usuario',
+            'sede_rcja',
+            'organismo',
+            'contrato',
+            'color',
+            'activo'
+        ]);
 
         return response()->json($result);
     }
+
+
 
     public function destroy($id): RedirectResponse
     {

@@ -21,6 +21,7 @@ use App\Models\ImpresoraDatosSnmp;
  * @property $contrato
  * @property $num_serie
  * @property $color
+ * @property $activo
  * @property $created_at
  * @property $updated_at
  *
@@ -47,13 +48,15 @@ class Impresora extends Model
         'nombre_cola_hacos',
         'sede_rcja',
         'contrato',
-        'color'
+        'color',
+        'activo'
     ];
 
     public function datosSnmp()
     {
         return $this->hasOne(ImpresoraDatosSnmp::class, 'impresora_id', 'id');
     }
+
 
 
     // Accesores desde datos SNMP
@@ -86,4 +89,7 @@ class Impresora extends Model
     {
         return $this->datosSnmp?->num_serie ?? 'No registrado';
     }
+
+    protected $appends = ['num_serie']; // Para acceder por JSON para la búsqueda
+
 }

@@ -79,7 +79,12 @@ class ActualizarSnmpImpresoras extends Command
                 $datosSnmp
             );
 
-            $this->info("Actualizada impresora {$impresora->ip} con modelo {$modeloSNMP}");
+            // Establecer activo = 1 si se han guardado datos SNMP, 0 si no
+            $tieneDatosSnmp = ImpresoraDatosSnmp::where('impresora_id', $impresora->id)->exists();
+            $impresora->activo = $tieneDatosSnmp ? 1 : 0;
+            $impresora->save();
+
+            $this->info("Actualizada impresora {$impresora->ip} con modelo {$modeloSNMP} y estado activo = {$impresora->activo}");
         }
     }
 
