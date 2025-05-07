@@ -46,6 +46,7 @@ use Carbon\Carbon;
                 <th>Páginas Color</th>
                 <th>MAC</th>
                 <th>Nº Serie</th>
+                <th>Estado</th>
             </tr>
         </thead>
         <tbody>
@@ -61,6 +62,7 @@ use Carbon\Carbon;
                     <td>{{ $impresora->paginas_color }}</td>
                     <td>{{ $impresora->mac }}</td>
                     <td>{{ $impresora->num_serie }}</td>
+                    <td>{{ $impresora->activo ? 'En activo' : 'Desactivado'}}</td>
                 </tr>
             @endforeach
         </tbody>
