@@ -25,6 +25,9 @@ Route::get('/impresoras/pdf', [ImpresoraController::class, 'exportarPDF'])->name
 
 
 // Resource route should be after all custom routes
+Route::get("/impresoras/pdf/filter", [ImpresoraController::class, "showFilterForm"])->name("impresoras.pdf.filter");
+Route::get("/impresoras/pdf/filtered", [ImpresoraController::class, "generateFilteredPDF"])->name("impresoras.pdf.filtered");
+
 Route::resource('impresoras', ImpresoraController::class);
 
 // Test and statistics routes

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Impresora;
+use App\Models\ImpresoraHistorico;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -145,8 +146,6 @@ class ImpresoraController extends Controller
         return response()->json($result);
     }
 
-
-
     public function destroy($id): RedirectResponse
     {
         Impresora::find($id)->delete();
@@ -237,7 +236,7 @@ class ImpresoraController extends Controller
                             'sede_rcja' => $data['sede_rcja'],
                             'tipo' => $data['tipo'],
                             'organismo' => $data['organismo'] ?? null,
-                            'contrato' => $data['contrato'], // Corregido de num_contrato a contrato
+                            'contrato' => $data['contrato'],
                             'descripcion' => $data['descripcion'] ?? null,
                             'num_serie' => $data['num_serie'],
                         ]);
@@ -285,8 +284,6 @@ class ImpresoraController extends Controller
         return view('impresora.importar');
     }
 
-
-
     public function exportarPDF()
     {
         $impresoras = Impresora::all();
@@ -297,4 +294,96 @@ class ImpresoraController extends Controller
             ->download("impresoras_$today.pdf");
     }
 
+    /**
+     * Show the PDF filter form.
+     */
+    public function showFilterForm(): View
+    {
+        return view('impresora.filterPdf');
+    }
+
+    /**
+     * Generate filtered PDF based on request parameters.
+     */
+    public function generateFilteredPDF(Request $request)
+    {
+        // Build the base query
+        $query = Impresora::query();
+
+        // Validate dates if provided and set up date filtering
+        $start_date = null;
+        $end_date = null;
+
+        if ($request->filled(['start_date', 'end_date'])) {
+            $validated = $request->validate([
+                'start_date' => 'required|date',
+                'end_date' => 'required|date|after_or_equal:start_date',
+            ]);
+
+            $start_date = Carbon::parse($validated['start_date'])->startOfDay();
+            $end_date = Carbon::parse($validated['end_date'])->endOfDay();
+        }
+
+        // Apply filters if they exist
+        $filterFields = [
+            'tipo',
+            'ubicacion',
+            'ip',
+            'usuario',
+            'sede_rcja',
+            'organismo',
+            'contrato',
+            'numero_serie'
+        ];
+
+        foreach ($filterFields as $field) {
+            if ($request->filled($field)) {
+                $query->where($field, 'LIKE', '%' . $request->input($field) . '%');
+            }
+        }
+
+        // Handle boolean filter
+        if ($request->has('color')) {
+            $query->where('color', true);
+        }
+
+        // Get the filtered results
+        $impresoras = $query->get();
+
+        // Calculate pages for each printer if dates are provided
+        if ($start_date && $end_date) {
+            foreach ($impresoras as $impresora) {
+                $historico = ImpresoraHistorico::where('impresora_id', $impresora->id)
+                    ->whereBetween('fecha', [$start_date, $end_date])
+                    ->selectRaw('MIN(paginas) as min_paginas, MAX(paginas) as max_paginas')
+                    ->first();
+
+                $impresora->paginas_totales = 0;
+
+                if ($historico && !is_null($historico->min_paginas) && !is_null($historico->max_paginas)) {
+                    $impresora->paginas_totales = $historico->max_paginas - $historico->min_paginas;
+                }
+            }
+        }
+
+        // Format dates for display
+        $display_start_date = $start_date ? $start_date->format('d/m/Y') : null;
+        $display_end_date = $end_date ? $end_date->format('d/m/Y') : null;
+
+        // Get filter parameters for the view
+        $filters = $request->only($filterFields + ['color']);
+
+        // Generate filename with date
+        $filename = 'impresoras_filtradas_' . Carbon::now()->format('d-m-Y') . '.pdf';
+
+        // Load view and generate PDF
+        return Pdf::loadView('impresora.pdfAllFiltered', [
+            'impresoras' => $impresoras,
+            'start_date' => $display_start_date,
+            'end_date' => $display_end_date,
+            'filters' => $filters,
+        ])
+            ->setPaper('a4', 'landscape')
+            ->download($filename);
+    }
 }
