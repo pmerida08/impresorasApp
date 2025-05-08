@@ -333,7 +333,7 @@ class ImpresoraController extends Controller
             'sede_rcja',
             'organismo',
             'contrato',
-            'numero_serie'
+            'num_serie'
         ];
 
         foreach ($filterFields as $field) {
@@ -358,10 +358,10 @@ class ImpresoraController extends Controller
                     ->selectRaw('MIN(paginas) as min_paginas, MAX(paginas) as max_paginas')
                     ->first();
 
-                $impresora->paginas_totales = 0;
+                    $impresora->total_paginas = 0;
 
                 if ($historico && !is_null($historico->min_paginas) && !is_null($historico->max_paginas)) {
-                    $impresora->paginas_totales = $historico->max_paginas - $historico->min_paginas;
+                    $impresora->total_paginas = $historico->max_paginas - $historico->min_paginas;
                 }
             }
         }

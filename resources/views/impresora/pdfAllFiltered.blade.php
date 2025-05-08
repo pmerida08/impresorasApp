@@ -81,9 +81,9 @@
                     <td>{{ $impresora->num_serie }}</td>
                     <td>{{ $impresora->color ? 'Sí' : 'No' }}</td>
                     @if($start_date && $end_date)
-                        <td style="text-align: right;">{{ number_format($impresora->paginas_totales, 0, ',', '.') }}</td>
+                        <td style="text-align: right;">{{ number_format($impresora->total_paginas, 0, ',', '.') }}</td>
                         @php
-                            $totalPaginas += $impresora->paginas_totales;
+                            $totalPaginas += $impresora->total_paginas;
                         @endphp
                     @endif
                 </tr>

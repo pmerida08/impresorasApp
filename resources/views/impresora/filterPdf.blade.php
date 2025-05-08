@@ -10,6 +10,7 @@
                 <div class="card-body">
                     <form method="GET" action="{{ route('impresoras.pdf.filtered') }}">
                         <div class="row mb-3">
+                            <span class="row-md-6 fst-italic text-muted">Introduce el rango de fechas para saber las páginas impresas</span>
                             <div class="col-md-6">
                                 <label for="start_date" class="form-label">Fecha Inicio</label>
                                 <input type="date" class="form-control" id="start_date" name="start_date">

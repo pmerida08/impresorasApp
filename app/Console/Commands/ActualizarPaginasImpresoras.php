@@ -25,26 +25,40 @@ class ActualizarPaginasImpresoras extends Command
         $impresoras = Impresora::all();
 
         foreach ($impresoras as $impresora) {
-            $paginasActuales = intval($impresora->getPaginasTotalAttribute());
+            $paginasActuales = intval($impresora->paginas_total);
+            $hoy = now('Europe/Madrid')->toDateString();
 
-            $historico = ImpresoraHistorico::where('impresora_id', $impresora->id)
-                ->whereDate('fecha', now('Europe/Madrid')->toDateString())
-                ->first();
+            if ($paginasActuales == 0) {
+                // Buscar la última lectura válida con páginas ≠ 0
+                $ultimaLecturaValida = ImpresoraHistorico::where('impresora_id', $impresora->id)
+                    ->where('paginas', '!=', 0)
+                    ->orderByDesc('fecha')
+                    ->first();
 
-            if ($historico) {
-                $historico->paginas = $paginasActuales;
-                $historico->save();
-            } else {
-                ImpresoraHistorico::create([
-                    'impresora_id' => $impresora->id,
-                    'fecha' => now('Europe/Madrid')->toDateString(),
-                    'paginas' => $paginasActuales
-                ]);
+                if ($ultimaLecturaValida) {
+                    $paginasActuales = $ultimaLecturaValida->paginas; // Usar valor anterior
+                } else {
+                    Log::warning("⚠️ No hay lectura válida anterior para la impresora {$impresora->id} ({$impresora->descripcion}). Se omite.");
+                    continue; // Si no hay valor anterior válido, salta esta impresora
+                }
             }
 
-            Log::info("🖨️ Impresora {$impresora->id} ({$impresora->observaciones}) actualizada con {$paginasActuales} páginas.");
+            // Guardar o actualizar lectura de hoy
+            $historico = ImpresoraHistorico::updateOrCreate(
+                [
+                    'impresora_id' => $impresora->id,
+                    'fecha' => $hoy,
+                ],
+                [
+                    'paginas' => $paginasActuales
+                ]
+            );
+
+            Log::info("🖨️ Impresora {$impresora->id} asignada a {$impresora->usuario} de {$impresora->ubicacion} ({$impresora->descripcion}) registrada con {$paginasActuales} páginas en fecha {$hoy}.");
         }
 
         Log::info('✅ Comando impresoras:actualizar_paginas finalizado');
     }
+
+
 }
