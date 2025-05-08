@@ -16,6 +16,11 @@ class ImpresoraDatosSnmp extends Model
         'paginas_color',
         'num_serie',
         'modelo',
+        'black_toner',
+        'cyan_toner',
+        'magenta_toner',
+        'yellow_toner',
+        'max_capacity'
     ];
 
     public function impresora()

@@ -90,6 +90,32 @@ class Impresora extends Model
         return $this->datosSnmp?->num_serie ?? 'No registrado';
     }
 
+    public function getBlackTonerAttribute()
+    {
+        return $this->datosSnmp?->black_toner ?? 'No registrado';
+    }
+
+    public function getCyanTonerAttribute()
+    {
+        return $this->datosSnmp?->cyan_toner ?? 'No registrado';
+    }
+
+    public function getMagentaTonerAttribute()
+    {
+        return $this->datosSnmp?->magenta_toner ?? 'No registrado';
+    }
+
+    public function getYellowTonerAttribute()
+    {
+        return $this->datosSnmp?->yellow_toner ?? 'No registrado';
+    }
+
+    public function getMaxCapacityAttribute()
+    {
+        $toners = $this->datosSnmp;
+        return $toners?->black_toner / $toners?->max_capacity * 100 ?? 'No registrado';
+    }
+
     protected $appends = ['num_serie']; // Para acceder por JSON para la búsqueda
 
 }

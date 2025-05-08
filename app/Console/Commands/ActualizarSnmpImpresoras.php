@@ -65,6 +65,11 @@ class ActualizarSnmpImpresoras extends Command
                 'paginas_bw' => isset($oids['pagesBWTotal']) ? explode(":", snmpget($impresora->ip, $community, $oids['pagesBWTotal']))[1] : 0,
                 'paginas_color' => isset($oids['pagesColorTotal']) ? explode(":", snmpget($impresora->ip, $community, $oids['pagesColorTotal']))[1] : 0,
                 'num_serie' => snmpget($impresora->ip, $community, $oids['numSerie'] ?? ''),
+                'black_toner' => isset($oids['blackToner'])? explode(":", snmpget($impresora->ip, $community, $oids['blackToner']))[1] : 'No registrado',
+                'cyan_toner' => isset($oids['cyanToner'])? explode(":", snmpget($impresora->ip, $community, $oids['cyanToner']))[1] : 'No registrado',
+               'magenta_toner' => isset($oids['magentaToner'])? explode(":", snmpget($impresora->ip, $community, $oids['magentaToner']))[1] : 'No registrado',
+               'yellow_toner' => isset($oids['yellowToner'])? explode(":", snmpget($impresora->ip, $community, $oids['yellowToner']))[1] : 'No registrado',
+               'max_capacity' => isset($oids['maxCapacity'])? explode(":", snmpget($impresora->ip, $community, $oids['maxCapacity']))[1] : 'No registrado',
             ];
 
             // Limpiar resultados (quitar "STRING: ..." y comillas dobles)

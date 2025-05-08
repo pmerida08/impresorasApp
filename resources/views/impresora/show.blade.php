@@ -19,76 +19,72 @@
                         </div>
                     </div>
 
-                    <div class="card-body bg-white">
-                        <div class="form-group mb-2 mb20">
-                            <strong>Modelo:</strong>
-                            {{ $impresora->modelo }}
-                        </div>
-
-                        <div class="form-group mb-2 mb20">
-                            <strong>Páginas impresas en total:</strong>
-                            {{ $impresora->paginastotal }}
-                        </div>
-                        <div class="form-group mb-2 mb20">
-                            <strong>Páginas impresas en blanco y negro:</strong>
-                            {{ $impresora->paginasbw }}
-                        </div>
-
-                        @if ($impresora->color == 1)
+                    <div class="card-body bg-white"
+                        style="display: flex; justify-content: space-between; align-items: center;">
+                        <div class="card-body bg-white">
                             <div class="form-group mb-2 mb20">
-                                <strong>Páginas impresas en color:</strong>
-                                {{ $impresora->paginascolor }}
+                                <strong>Modelo:</strong>
+                                {{ $impresora->modelo }}
                             </div>
-                        @endif
 
-                        <div class="form-group mb-2 mb20">
-                            <strong>Número de serie:</strong>
-                            {{ $impresora->num_serie }}
-                        </div>
-                        <div class="form-group mb-2 mb20">
-                            <strong>IP:</strong>
-                            {{ $impresora->ip }}
-                        </div>
-                        <div class="form-group mb-2 mb20">
-                            <strong>Dirección MAC:</strong>
-                            {{ $impresora->mac }}
-                        </div>
-                        <div class="float-right">
-                            <a class="btn btn-primary btn-sm"
-                                href="{{ route('impresoras.historico', ['id' => $impresora->id]) }}">
-                                {{ __('Ver histórico') }}</a>
-                        </div>
+                            <div class="form-group mb-2 mb20">
+                                <strong>Páginas impresas en total:</strong>
+                                {{ $impresora->paginastotal }}
+                            </div>
+                            <div class="form-group mb-2 mb20">
+                                <strong>Páginas impresas en blanco y negro:</strong>
+                                {{ $impresora->paginasbw }}
+                            </div>
 
-
-
-                        {{-- <div class="form-group mb-2 mb20">
-                                    <strong>Tóner:</strong>
-                                    {{ $impresora->toner }}
-                                </div>
+                            @if ($impresora->color == 1)
                                 <div class="form-group mb-2 mb20">
-                                    <strong>Unidad de imagen:</strong>
-                                    {{ $impresora->unidadimg }}
+                                    <strong>Páginas impresas en color:</strong>
+                                    {{ $impresora->paginascolor }}
                                 </div>
-                                <div class="form-group mb-2 mb20">
-                                    <strong>Páginas restantes del tóner:</strong>
-                                    {{ $impresora->paginasrestantestoner }}
-                                </div>
-                                <div class="form-group mb-2 mb20">
-                                    <strong>Páginas restantes de la unidad de imagen:</strong>
-                                    {{ $impresora->paginasrestantesunidadimg }}
-                                </div> --}}
+                            @endif
 
-                        {{-- <div class="form-group mb-2 mb20">
-                                    <strong>Mensaje de alerta:</strong>
-                                    {{ $impresora->alert }}
+                            <div class="form-group mb-2 mb20">
+                                <strong>Número de serie:</strong>
+                                {{ $impresora->num_serie }}
+                            </div>
+                            <div class="form-group mb-2 mb20">
+                                <strong>IP:</strong>
+                                {{ $impresora->ip }}
+                            </div>
+                            <div class="form-group mb-2 mb20">
+                                <strong>Dirección MAC:</strong>
+                                {{ explode('-', $impresora->mac)[1] }}
+                            </div>
+                            <div class="form-group mb-2 mb20">
+                                <strong>Nivel de Tóner:</strong>
+                                <div class="toner-levels">
+                                    <div class="toner-pill"
+                                        style="background-color: rgba(0, 0, 0, 0.8); width: {{ $impresora->black_toner ?? 0 }}%;">
+                                        Negro: {{ $impresora->black_toner ?? 0 }}%
+                                    </div>
+                                    @if ($impresora->color == 1)
+                                        <div class="toner-pill"
+                                            style="background-color: rgba(0, 123, 255, 0.8); width: {{ $impresora->cyan_toner ?? 0 }}%;">
+                                            Cian: {{ $impresora->cyan_toner ?? 0 }}%
+                                        </div>
+                                        <div class="toner-pill"
+                                            style="background-color: rgba(255, 0, 255, 0.8); width: {{ $impresora->magenta_toner ?? 0 }}%;">
+                                            Magenta: {{ $impresora->magenta_toner ?? 0 }}%
+                                        </div>
+                                        <div class="toner-pill"
+                                            style="background-color: rgba(187, 187, 0, 0.8); width: {{ $impresora->yellow_toner ?? 0 }}%;">
+                                            Amarillo: {{ $impresora->yellow_toner ?? 0 }}%
+                                        </div>
+                                    @endif
                                 </div>
-                                
-                                <div class="form-group mb-2 mb20">
-                                    <strong>Número de serie:</strong>
-                                    {{ $impresora->numserie }}
-                                </div> --}}
+                            </div>
+                            <div class="float-right">
+                                <a class="btn btn-primary btn-sm"
+                                    href="{{ route('impresoras.historico', ['id' => $impresora->id]) }}">
+                                    {{ __('Ver histórico') }}</a>
+                            </div>
+                        </div>
 
-                        {{-- TODO: Toner, Unidad Imagen,.... MIBs --}}
 
                     </div>
                 </div>
@@ -96,3 +92,19 @@
         </div>
     </section>
 @endsection
+
+<style>
+    .toner-levels {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .toner-pill {
+        color: white;
+        padding: 5px;
+        border-radius: 5px;
+        text-align: center;
+        max-width: 200px; /* Set a maximum width for the pills */
+    }
+</style>
