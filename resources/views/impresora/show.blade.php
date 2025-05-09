@@ -58,22 +58,33 @@
                             <div class="form-group mb-2 mb20">
                                 <strong>Nivel de Tóner:</strong>
                                 <div class="toner-levels">
-                                    <div class="toner-pill"
-                                        style="background-color: rgba(0, 0, 0, 0.8); width: {{ $impresora->black_toner ?? 0 }}%;">
-                                        Negro: {{ $impresora->black_toner ?? 0 }}%
-                                    </div>
                                     @if ($impresora->color == 1)
-                                        <div class="toner-pill"
-                                            style="background-color: rgba(0, 123, 255, 0.8); width: {{ $impresora->cyan_toner ?? 0 }}%;">
+                                        <div class="toner-pill" style="background-color: rgba(0, 0, 0, 0.8);">
+                                            Negro: {{ $impresora->black_toner ?? 0 }}%
+                                            <span
+                                                style="font-weight: bold;">{{ $impresora->showAlert($impresora->black_toner) }}</span>
+                                        </div>
+                                        <div class="toner-pill" style="background-color: rgba(0, 123, 255, 0.8);">
                                             Cian: {{ $impresora->cyan_toner ?? 0 }}%
+                                            <span
+                                                style="font-weight: bold;">{{ $impresora->showAlert($impresora->cyan_toner) }}</span>
                                         </div>
-                                        <div class="toner-pill"
-                                            style="background-color: rgba(255, 0, 255, 0.8); width: {{ $impresora->magenta_toner ?? 0 }}%;">
+                                        <div class="toner-pill" style="background-color: rgba(255, 0, 255, 0.8);">
                                             Magenta: {{ $impresora->magenta_toner ?? 0 }}%
+                                            <span
+                                                style="font-weight: bold;">{{ $impresora->showAlert($impresora->magenta_toner) }}</span>
                                         </div>
-                                        <div class="toner-pill"
-                                            style="background-color: rgba(187, 187, 0, 0.8); width: {{ $impresora->yellow_toner ?? 0 }}%;">
+                                        <div class="toner-pill" style="background-color: rgba(187, 187, 0, 0.8);">
                                             Amarillo: {{ $impresora->yellow_toner ?? 0 }}%
+                                            <span
+                                                style="font-weight: bold;">{{ $impresora->showAlert($impresora->yellow_toner) }}</span>
+                                        </div>
+                                    @else
+                                        <div class="toner-pill"
+                                            style="background-color: rgba(0, 0, 0, 0.8); width: {{ $impresora->black_toner ?? 0 }}%;">
+                                            Negro: {{ $impresora->max_capacity ?? 0 }}%
+                                            <span
+                                                style="font-weight: bold;">{{ $impresora->showAlert($impresora->max_capacity) }}</span>
                                         </div>
                                     @endif
                                 </div>
@@ -105,6 +116,7 @@
         padding: 5px;
         border-radius: 5px;
         text-align: center;
-        max-width: 200px; /* Set a maximum width for the pills */
+        max-width: 300px;
+        /* Set a maximum width for the pills */
     }
 </style>

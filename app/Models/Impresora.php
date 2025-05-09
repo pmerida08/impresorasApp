@@ -116,6 +116,17 @@ class Impresora extends Model
         return $toners?->black_toner / $toners?->max_capacity * 100 ?? 'No registrado';
     }
 
+    public function showAlert($toner)
+    {
+        if ($toner < 5) {
+            return '🪫 CRÍTICO';
+        } elseif ($toner < 20) {
+            return '⚠️ ADVERTENCIA';
+        } else {
+            return '✅ BUEN ESTADO';
+        }
+    }
+
     protected $appends = ['num_serie']; // Para acceder por JSON para la búsqueda
 
 }

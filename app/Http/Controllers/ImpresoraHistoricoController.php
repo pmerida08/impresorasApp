@@ -8,6 +8,12 @@ use Illuminate\Http\Request;
 
 class ImpresoraHistoricoController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function mostrar($id)
     {
         $impresora = Impresora::findOrFail($id);

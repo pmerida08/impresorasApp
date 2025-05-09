@@ -22,7 +22,7 @@ Route::get('/impresoras/{id}/historico', [ImpresoraHistoricoController::class, '
 Route::get('/impresoras/{id}/paginas-rango', [ImpresoraHistoricoController::class, 'mostrarPaginasEnRango'])
     ->name('impresoras.paginas.rango');
 Route::get('/impresoras/pdf', [ImpresoraController::class, 'exportarPDF'])->name('impresoras.pdfAll');
-
+Route::get('/check-toner-levels', [ImpresoraController::class, 'checkTonerLevels']);
 
 // Resource route should be after all custom routes
 Route::get("/impresoras/pdf/filter", [ImpresoraController::class, "showFilterForm"])->name("impresoras.pdf.filter");

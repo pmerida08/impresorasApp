@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Impresora;
 use App\Models\ImpresoraHistorico;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Http\Requests\ImpresoraRequest;
@@ -12,19 +13,32 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Validator;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\LowTonerAlert;
+use PHPMailer\PHPMailer\PHPMailer;
+use App\Services\TonerLevelService;
 
 class ImpresoraController extends Controller
 {
+    protected $tonerLevelService;
+
+    public function __construct(TonerLevelService $tonerLevelService)
+    {
+        $this->middleware('auth');
+        $this->tonerLevelService = $tonerLevelService;
+    }
+
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request): View
+    public function index(Request $request, Impresora $impresora): View
     {
-        $impresoras = Impresora::paginate(15);
+        $impresoras = $impresora->paginate(15);
 
-        return view('impresora.index', compact('impresoras'))
-            ->with('i', ($request->input('page', 1) - 1) * $impresoras->perPage())
-            ->with('pagination', 'pagination::bootstrap-5');
+        return view('impresora.index', [
+            'impresoras' => $impresoras,
+            'i' => ($request->input('page', 1) - 1) * $impresoras->perPage(),
+        ])->with('pagination', 'pagination::bootstrap-5');
     }
 
     /**
@@ -358,7 +372,7 @@ class ImpresoraController extends Controller
                     ->selectRaw('MIN(paginas) as min_paginas, MAX(paginas) as max_paginas')
                     ->first();
 
-                    $impresora->total_paginas = 0;
+                $impresora->total_paginas = 0;
 
                 if ($historico && !is_null($historico->min_paginas) && !is_null($historico->max_paginas)) {
                     $impresora->total_paginas = $historico->max_paginas - $historico->min_paginas;
@@ -385,5 +399,63 @@ class ImpresoraController extends Controller
         ])
             ->setPaper('a4', 'landscape')
             ->download($filename);
+    }
+
+    public function checkTonerLevels()
+    {
+        $impresoras = Impresora::all();
+        $alertEmail = 'backup.co.cehap@juntadeandalucia.es';
+        $results = [];
+
+        foreach ($impresoras as $impresora) {
+            $lowTonerLevels = $this->tonerLevelService->checkTonerLevels($impresora);
+
+            if (!empty($lowTonerLevels)) {
+                $mailResult = $this->tonerLevelService->sendLowTonerAlert($impresora, $lowTonerLevels, $alertEmail);
+                $results[] = [
+                    'impresora' => $impresora->ip,
+                    'lowTonerLevels' => $lowTonerLevels,
+                    'mailSent' => $mailResult
+                ];
+            }
+        }
+
+        return response()->json($results);
+    }
+
+    private function sendLowTonerAlert($impresora, $lowTonerLevels, $alertEmail)
+    {
+        $mail = new PHPMailer(true);
+
+        try {
+            //Server settings
+            $mail->isSMTP();
+            $mail->Host = 'mail.juntadeandalucia.es';
+            $mail->Port = 465;
+            $mail->SMTPAuth = false; // <-- Sin autenticación
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+
+            //Recipients
+            $mail->setFrom('ceis.dpco.chap@juntadeandalucia.es', 'Remitente');
+            $mail->addAddress($alertEmail);
+
+            //Content
+            $mail->isHTML(true);
+            $mail->Subject = 'Alerta de nivel bajo de tóner';
+
+            $body = "La impresora {$impresora->tipo} (IP: {$impresora->ip}) tiene niveles bajos de tóner:<br><br>";
+            foreach ($lowTonerLevels as $color => $level) {
+                $body .= ucfirst($color) . ": " . $level . "%<br>";
+            }
+
+            $mail->Body = $body;
+
+            $mail->send();
+            $this->info("Correo enviado correctamente para impresora: {$impresora->ip}");
+            return true;
+        } catch (Exception $e) {
+            $this->error("Error al enviar correo para impresora {$impresora->ip}: {$mail->ErrorInfo}");
+            return false;
+        }
     }
 }
