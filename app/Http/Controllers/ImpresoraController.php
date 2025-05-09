@@ -431,12 +431,15 @@ class ImpresoraController extends Controller
             //Server settings
             $mail->isSMTP();
             $mail->Host = 'mail.juntadeandalucia.es';
-            $mail->Port = 465;
-            $mail->SMTPAuth = false; // <-- Sin autenticación
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port = 25;
+            $mail->SMTPAuth = false;
+            $mail->SMTPSecure = false;
+            $mail->SMTPAutoTLS = false;
+            $mail->CharSet = 'UTF-8';
+
 
             //Recipients
-            $mail->setFrom('ceis.dpco.chap@juntadeandalucia.es', 'Remitente');
+            $mail->setFrom('ceis.dpco.chap@juntadeandalucia.es', 'Junta de Andalucía');
             $mail->addAddress($alertEmail);
 
             //Content

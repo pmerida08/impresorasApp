@@ -6,6 +6,8 @@ use App\Models\Impresora;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\LowTonerAlert;
 
 class TonerLevelService
 {
@@ -33,23 +35,27 @@ class TonerLevelService
         return $lowTonerLevels;
     }
 
-    public function sendLowTonerAlert(Impresora $impresora, array $lowTonerLevels, string $alertEmail)
+    public function sendLowTonerAlert(Impresora $impresora, array $lowTonerLevels, $alertEmails)
     {
         $mail = new PHPMailer(true);
 
         try {
-            //Server settings
+            // Server settings
             $mail->isSMTP();
             $mail->Host = 'mail.juntadeandalucia.es';
-            $mail->Port = 465;
-            $mail->SMTPAuth = false;
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port = 25; // Standard SMTP port for non-encrypted connections
+            $mail->SMTPAuth = false; // No authentication
+            $mail->SMTPSecure = false; // No encryption
+            $mail->SMTPAutoTLS = false; // Disable automatic TLS
+            $mail->CharSet = 'UTF-8';
 
-            //Recipients
-            $mail->setFrom('ceis.dpco.chap@juntadeandalucia.es', 'Remitente');
-            $mail->addAddress($alertEmail);
+            // Recipients
+            $mail->setFrom('ceis.dpco.chap@juntadeandalucia.es', 'Junta de Andalucía');
+            foreach ($alertEmails as $alertEmail) {
+                $mail->addAddress($alertEmail);
+            }
 
-            //Content
+            // Content
             $mail->isHTML(true);
             $mail->Subject = 'Alerta de nivel bajo de tóner';
 

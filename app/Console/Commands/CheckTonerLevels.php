@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\User;
 use Illuminate\Console\Command;
 use App\Models\Impresora;
 use App\Services\TonerLevelService;
@@ -22,8 +23,7 @@ class CheckTonerLevels extends Command
     public function handle()
     {
         $impresoras = Impresora::with('datosSnmp')->get();
-        // $alertEmail = 'backup.co.cehap@juntadeandalucia.es';
-        $alertEmail = 'a21mevepa@iesgrancapitan.org';
+        $alertEmails = User::all()->pluck('email')->toArray();
         $results = [];
 
         foreach ($impresoras as $impresora) {
@@ -32,7 +32,7 @@ class CheckTonerLevels extends Command
             $lowTonerLevels = $this->tonerLevelService->checkTonerLevels($impresora);
 
             if (!empty($lowTonerLevels)) {
-                $mailResult = $this->tonerLevelService->sendLowTonerAlert($impresora, $lowTonerLevels, $alertEmail);
+                $mailResult = $this->tonerLevelService->sendLowTonerAlert($impresora, $lowTonerLevels, $alertEmails);
                 $results[] = [
                     'impresora' => $impresora->ip,
                     'lowTonerLevels' => $lowTonerLevels,
