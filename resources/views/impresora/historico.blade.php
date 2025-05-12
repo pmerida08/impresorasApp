@@ -41,15 +41,41 @@
             type: 'bar',
             data: {
                 labels: {!! json_encode($labels) !!},
-                datasets: [{
-                    label: 'Páginas impresas por mes',
-                    data: {!! json_encode($valores) !!},
-                    backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1
-                }]
+                datasets: [
+                    {
+                        label: 'Páginas Totales',
+                        data: {!! json_encode($valoresTotal) !!},
+                        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Páginas B/N',
+                        data: {!! json_encode($valoresBW) !!},
+                        backgroundColor: 'rgba(54, 54, 54, 0.6)',
+                        borderColor: 'rgba(54, 54, 54, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Páginas Color',
+                        data: {!! json_encode($valoresColor) !!},
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }
+                ]
             },
             options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Páginas impresas por mes'
+                    }
+                },
                 scales: {
                     y: {
                         beginAtZero: true,

@@ -26,6 +26,8 @@ class ActualizarPaginasImpresoras extends Command
 
         foreach ($impresoras as $impresora) {
             $paginasActuales = intval($impresora->paginas_total);
+            $paginasBW = intval($impresora->paginas_bw);
+            $paginasColor = intval($impresora->paginas_color);
             $hoy = now('Europe/Madrid')->toDateString();
 
             if ($paginasActuales == 0) {
@@ -37,6 +39,8 @@ class ActualizarPaginasImpresoras extends Command
 
                 if ($ultimaLecturaValida) {
                     $paginasActuales = $ultimaLecturaValida->paginas; // Usar valor anterior
+                    $paginasBW = $ultimaLecturaValida->paginas_bw ?? 0;
+                    $paginasColor = $ultimaLecturaValida->paginas_color ?? 0;
                 } else {
                     Log::warning("⚠️ No hay lectura válida anterior para la impresora {$impresora->id} ({$impresora->descripcion}). Se omite.");
                     continue; // Si no hay valor anterior válido, salta esta impresora
@@ -50,7 +54,9 @@ class ActualizarPaginasImpresoras extends Command
                     'fecha' => $hoy,
                 ],
                 [
-                    'paginas' => $paginasActuales
+                    'paginas' => $paginasActuales,
+                    'paginas_bw' => $paginasBW,
+                    'paginas_color' => $paginasColor
                 ]
             );
 
@@ -59,6 +65,4 @@ class ActualizarPaginasImpresoras extends Command
 
         Log::info('✅ Comando impresoras:actualizar_paginas finalizado');
     }
-
-
 }
