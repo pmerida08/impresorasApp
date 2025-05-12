@@ -11,6 +11,9 @@ use App\Mail\LowTonerAlert;
 
 class TonerLevelService
 {
+    // Almacena las impresoras con niveles bajos de tóner
+    private $impresorasConAlertas = [];
+    
     public function checkTonerLevels(Impresora $impresora)
     {
         $lowTonerLevels = [];
@@ -35,43 +38,104 @@ class TonerLevelService
         return $lowTonerLevels;
     }
 
-    public function sendLowTonerAlert(Impresora $impresora, array $lowTonerLevels, $alertEmails)
+    // Método para recopilar impresoras con alertas
+    public function collectLowTonerPrinter(Impresora $impresora, array $lowTonerLevels)
     {
+        if (!empty($lowTonerLevels)) {
+            $this->impresorasConAlertas[] = [
+                'impresora' => $impresora,
+                'tonerLevels' => $lowTonerLevels
+            ];
+        }
+    }
+    
+    // Método para enviar un solo correo con todas las alertas
+    public function sendCombinedLowTonerAlert($alertEmail)
+    {
+        // Si no hay impresoras con alertas, no enviamos nada
+        if (empty($this->impresorasConAlertas)) {
+            Log::info("No hay impresoras con niveles bajos de tóner para reportar");
+            return true;
+        }
+        
+        // Asegurarse de que tenemos una dirección de correo
+        if (empty($alertEmail)) {
+            $alertEmail = env('MAIL_DESTINO', 'a21mevepa@iesgrancapitan.org');
+            Log::info("Usando dirección de correo de respaldo: $alertEmail");
+        }
+        
+        Log::info("Enviando alerta combinada a: " . (is_array($alertEmail) ? implode(', ', $alertEmail) : $alertEmail));
+        
         $mail = new PHPMailer(true);
-
+        
         try {
             // Server settings
             $mail->isSMTP();
             $mail->Host = 'mail.juntadeandalucia.es';
-            $mail->Port = 25; // Standard SMTP port for non-encrypted connections
-            $mail->SMTPAuth = false; // No authentication
-            $mail->SMTPSecure = false; // No encryption
-            $mail->SMTPAutoTLS = false; // Disable automatic TLS
+            $mail->Port = 25;
+            $mail->SMTPAuth = false;
+            $mail->SMTPSecure = false;
+            $mail->SMTPAutoTLS = false;
             $mail->CharSet = 'UTF-8';
 
             // Recipients
             $mail->setFrom('ceis.dpco.chap@juntadeandalucia.es', 'Junta de Andalucía');
-            foreach ($alertEmails as $alertEmail) {
+            
+            // Añadir destinatarios
+            if (is_array($alertEmail)) {
+                foreach ($alertEmail as $email) {
+                    $mail->addAddress($email);
+                }
+            } else {
                 $mail->addAddress($alertEmail);
             }
 
             // Content
             $mail->isHTML(true);
-            $mail->Subject = 'Alerta de nivel bajo de tóner';
+            $mail->Subject = 'Alerta: Impresoras con niveles bajos de tóner';
 
-            $body = "La impresora {$impresora->tipo} (IP: {$impresora->ip}) tiene niveles bajos de tóner:<br><br>";
-            foreach ($lowTonerLevels as $color => $level) {
-                $body .= ucfirst($color) . ": " . $level . "%<br>";
+            $body = "<h2>Alerta: Impresoras con niveles bajos de tóner</h2>";
+            $body .= "<p>Las siguientes impresoras tienen niveles bajos de tóner:</p>";
+            
+            $body .= "<table border='1' cellpadding='5' style='border-collapse: collapse;'>";
+            $body .= "<tr style='background-color: #f2f2f2;'><th>Impresora</th><th>IP</th><th>Ubicación</th><th>Color</th><th>Nivel</th></tr>";
+            
+            foreach ($this->impresorasConAlertas as $item) {
+                $impresora = $item['impresora'];
+                foreach ($item['tonerLevels'] as $color => $level) {
+                    $body .= "<tr>";
+                    $body .= "<td>{$impresora->tipo} {$impresora->modelo}</td>";
+                    $body .= "<td>{$impresora->ip}</td>";
+                    $body .= "<td>{$impresora->ubicacion}</td>";
+                    $body .= "<td>" . ucfirst($color) . "</td>";
+                    $body .= "<td>{$level}%</td>";
+                    $body .= "</tr>";
+                }
             }
+            
+            $body .= "</table>";
+            $body .= "<p>Este es un mensaje automático del sistema de monitoreo de impresoras.</p>";
 
             $mail->Body = $body;
 
             $mail->send();
-            Log::info("Correo enviado correctamente para impresora: {$impresora->ip}");
+            Log::info("Correo de alerta combinada enviado correctamente con información de " . count($this->impresorasConAlertas) . " impresoras");
+            
+            // Limpiar la lista después de enviar
+            $this->impresorasConAlertas = [];
+            
             return true;
         } catch (Exception $e) {
-            Log::error("Error al enviar correo para impresora {$impresora->ip}: {$mail->ErrorInfo}");
+            Log::error("Error al enviar correo de alerta combinada: {$mail->ErrorInfo}");
             return false;
         }
+    }
+    
+    // Mantener el método original para compatibilidad con el código existente
+    public function sendLowTonerAlert(Impresora $impresora, array $lowTonerLevels, $alertEmail)
+    {
+        // Simplemente recopilamos la información y devolvemos true
+        $this->collectLowTonerPrinter($impresora, $lowTonerLevels);
+        return true;
     }
 }

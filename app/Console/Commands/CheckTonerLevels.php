@@ -23,7 +23,15 @@ class CheckTonerLevels extends Command
     public function handle()
     {
         $impresoras = Impresora::with('datosSnmp')->get();
-        $alertEmails = User::all()->pluck('email')->toArray();
+        
+        // Obtener la dirección de correo y verificar que no esté vacía
+        $alertEmail = env('MAIL_DESTINO');
+        if (empty($alertEmail)) {
+            $this->error("La variable MAIL_DESTINO no está configurada en el archivo .env");
+            return 1;
+        }
+        
+        $this->info("Se enviarán alertas a: $alertEmail");
         $results = [];
 
         foreach ($impresoras as $impresora) {
@@ -32,27 +40,39 @@ class CheckTonerLevels extends Command
             $lowTonerLevels = $this->tonerLevelService->checkTonerLevels($impresora);
 
             if (!empty($lowTonerLevels)) {
-                $mailResult = $this->tonerLevelService->sendLowTonerAlert($impresora, $lowTonerLevels, $alertEmails);
+                // Solo recopilamos la información, no enviamos correos individuales
+                $this->tonerLevelService->collectLowTonerPrinter($impresora, $lowTonerLevels);
                 $results[] = [
                     'impresora' => $impresora->ip,
-                    'lowTonerLevels' => $lowTonerLevels,
-                    'mailSent' => $mailResult
+                    'lowTonerLevels' => $lowTonerLevels
                 ];
-                $this->info("Alerta enviada para impresora: {$impresora->ip}");
+                $this->info("Alerta recopilada para impresora: {$impresora->ip}");
             } else {
                 $this->info("Niveles de tóner normales para impresora: {$impresora->ip}");
             }
         }
 
+        // Enviar un solo correo con todas las alertas recopiladas
+        $mailSent = false;
+        if (!empty($results)) {
+            $mailSent = $this->tonerLevelService->sendCombinedLowTonerAlert($alertEmail);
+            $this->info($mailSent ? "Correo de alerta combinada enviado correctamente" : "Error al enviar correo de alerta combinada");
+        } else {
+            $this->info("No se encontraron impresoras con niveles bajos de tóner");
+        }
+
         $this->info("Verificación de niveles de tóner completada.");
-        $this->table(['Impresora', 'Niveles Bajos', 'Correo Enviado'], 
+        $this->table(['Impresora', 'Niveles Bajos'], 
             array_map(function($result) {
                 return [
                     $result['impresora'],
-                    json_encode($result['lowTonerLevels']),
-                    $result['mailSent'] ? 'Sí' : 'No'
+                    json_encode($result['lowTonerLevels'])
                 ];
             }, $results)
         );
+        
+        if (!empty($results)) {
+            $this->info("Estado del envío de correo: " . ($mailSent ? "Enviado correctamente" : "Error al enviar"));
+        }
     }
 }
