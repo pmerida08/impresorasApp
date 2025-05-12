@@ -53,7 +53,11 @@
                             </div>
                             <div class="form-group mb-2 mb20">
                                 <strong>Dirección MAC:</strong>
-                                {{ explode('-', $impresora->mac)[1] }}
+                                @if (strpos($impresora->mac, '-') !== false)
+                                    {{ explode('-', $impresora->mac)[1] }}
+                                @else
+                                    {{ $impresora->mac }}
+                                @endif
                             </div>
                             <div class="form-group mb-2 mb20">
                                 <strong>Nivel de Tóner:</strong>

@@ -404,7 +404,7 @@ class ImpresoraController extends Controller
     public function checkTonerLevels()
     {
         $impresoras = Impresora::all();
-        $alertEmail = 'backup.co.cehap@juntadeandalucia.es';
+        $alertEmail = env('MAIL_DESTINO');
         $results = [];
 
         foreach ($impresoras as $impresora) {
