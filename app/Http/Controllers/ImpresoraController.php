@@ -369,13 +369,30 @@ class ImpresoraController extends Controller
             foreach ($impresoras as $impresora) {
                 $historico = ImpresoraHistorico::where('impresora_id', $impresora->id)
                     ->whereBetween('fecha', [$start_date, $end_date])
-                    ->selectRaw('MIN(paginas) as min_paginas, MAX(paginas) as max_paginas')
+                    ->selectRaw('
+                        MIN(paginas) as min_paginas, 
+                        MAX(paginas) as max_paginas,
+                        MIN(paginas_bw) as min_paginas_bw, 
+                        MAX(paginas_bw) as max_paginas_bw,
+                        MIN(paginas_color) as min_paginas_color, 
+                        MAX(paginas_color) as max_paginas_color
+                    ')
                     ->first();
 
                 $impresora->total_paginas = 0;
+                $impresora->total_paginas_bw = 0;
+                $impresora->total_paginas_color = 0;
 
-                if ($historico && !is_null($historico->min_paginas) && !is_null($historico->max_paginas)) {
-                    $impresora->total_paginas = $historico->max_paginas - $historico->min_paginas;
+                if ($historico) {
+                    if (!is_null($historico->min_paginas) && !is_null($historico->max_paginas)) {
+                        $impresora->total_paginas = $historico->max_paginas - $historico->min_paginas;
+                    }
+                    if (!is_null($historico->min_paginas_bw) && !is_null($historico->max_paginas_bw)) {
+                        $impresora->total_paginas_bw = $historico->max_paginas_bw - $historico->min_paginas_bw;
+                    }
+                    if (!is_null($historico->min_paginas_color) && !is_null($historico->max_paginas_color)) {
+                        $impresora->total_paginas_color = $historico->max_paginas_color - $historico->min_paginas_color;
+                    }
                 }
             }
         }

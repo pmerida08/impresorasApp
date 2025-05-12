@@ -41,6 +41,11 @@ use Carbon\Carbon;
                 <th>Modelo</th>
                 <th>Ubicación</th>
                 <th>Usuario</th>
+                <th>Sede RCJA</th>
+                <th>Organismo</th>
+                <th>Contrato</th>
+                <th>Tipo</th>
+                <th>Color</th>
                 <th>Páginas Total</th>
                 <th>Páginas BW</th>
                 <th>Páginas Color</th>
@@ -50,13 +55,17 @@ use Carbon\Carbon;
             </tr>
         </thead>
         <tbody>
-            // TODO: Concretar que es lo que se quiere ver:
             @foreach ($impresoras as $impresora)
                 <tr>
                     <td>{{ $impresora->ip }}</td>
                     <td>{{ $impresora->modelo }}</td>
                     <td>{{ $impresora->ubicacion }}</td>
                     <td>{{ $impresora->usuario }}</td>
+                    <td>{{ $impresora->sede_rcja }}</td>
+                    <td>{{ $impresora->organismo }}</td>
+                    <td>{{ $impresora->contrato }}</td>
+                    <td>{{ $impresora->tipo }}</td>
+                    <td>{{ $impresora->color ? 'Sí' : 'No' }}</td>
                     <td>{{ $impresora->paginas_total }}</td>
                     <td>{{ $impresora->paginas_bw }}</td>
                     <td>{{ $impresora->paginas_color }}</td>
