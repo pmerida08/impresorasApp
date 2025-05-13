@@ -327,15 +327,18 @@ class ImpresoraController extends Controller
         // Validate dates if provided and set up date filtering
         $start_date = null;
         $end_date = null;
+        $range_paginas = null;
 
-        if ($request->filled(['start_date', 'end_date'])) {
+        if ($request->filled(['start_date', 'end_date', 'range_paginas'])) {
             $validated = $request->validate([
                 'start_date' => 'required|date',
                 'end_date' => 'required|date|after_or_equal:start_date',
+                'range_paginas' => 'required|integer|min:0|max:1000000',
             ]);
 
             $start_date = Carbon::parse($validated['start_date'])->startOfDay();
             $end_date = Carbon::parse($validated['end_date'])->endOfDay();
+            $range_paginas = $validated['range_paginas'];
         }
 
         // Apply filters if they exist
@@ -359,6 +362,18 @@ class ImpresoraController extends Controller
         // Handle boolean filter
         if ($request->has('color')) {
             $query->where('color', true);
+        }
+
+        // Handle range filter
+        if ($range_paginas && $start_date && $end_date) {
+            $query->whereExists(function ($subquery) use ($start_date, $end_date, $range_paginas) {
+                $subquery->selectRaw('1')
+                    ->from('impresora_historicos')
+                    ->whereColumn('impresoras.id', '=', 'impresora_historicos.impresora_id')
+                    ->whereBetween('fecha', [$start_date, $end_date])
+                    ->havingRaw('MAX(paginas) - MIN(paginas) >= ?', [$range_paginas])
+                    ->groupBy('impresora_id');
+            });
         }
 
         // Get the filtered results
@@ -413,6 +428,7 @@ class ImpresoraController extends Controller
             'start_date' => $display_start_date,
             'end_date' => $display_end_date,
             'filters' => $filters,
+            'range_paginas' => $range_paginas,
         ])
             ->setPaper('a4', 'landscape')
             ->download($filename);

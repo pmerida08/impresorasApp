@@ -2,13 +2,17 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class ImpresoraHistorico extends Model
 {
+    use HasFactory;
+
+    protected $table = 'impresora_historicos';
     protected $fillable = [
-        'impresora_id', 
-        'fecha', 
+        'impresora_id',
+        'fecha',
         'paginas',
         'paginas_bw',
         'paginas_color',

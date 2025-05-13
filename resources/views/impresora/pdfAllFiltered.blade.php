@@ -99,6 +99,11 @@
                 </div>
             @endif
         @endforeach
+        @if (isset($range_paginas) && $range_paginas)
+            <div class="filter-item">
+                Mínimo de páginas: {{ number_format($range_paginas, 0, ',', '.') }}
+            </div>
+        @endif
     </div>
 
     <table>

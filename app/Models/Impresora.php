@@ -57,7 +57,13 @@ class Impresora extends Model
         return $this->hasOne(ImpresoraDatosSnmp::class, 'impresora_id', 'id');
     }
 
-
+    /**
+     * Relación con el modelo ImpresoraHistorico
+     */
+    public function historico()
+    {
+        return $this->hasMany(ImpresoraHistorico::class, 'impresora_id', 'id');
+    }
 
     // Accesores desde datos SNMP
     public function getModeloAttribute()
