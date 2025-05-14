@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 14-05-2025 a las 10:14:13
+-- Tiempo de generación: 14-05-2025 a las 10:33:52
 -- Versión del servidor: 8.0.42-0ubuntu0.24.04.1
 -- Versión de PHP: 8.3.6
 
@@ -36,10 +36,6 @@ CREATE TABLE `cache` (
   `expiration` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- RELACIONES PARA LA TABLA `cache`:
---
-
 -- --------------------------------------------------------
 
 --
@@ -52,10 +48,6 @@ CREATE TABLE `cache_locks` (
   `owner` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `expiration` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- RELACIONES PARA LA TABLA `cache_locks`:
---
 
 -- --------------------------------------------------------
 
@@ -73,10 +65,6 @@ CREATE TABLE `failed_jobs` (
   `exception` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
   `failed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- RELACIONES PARA LA TABLA `failed_jobs`:
---
 
 -- --------------------------------------------------------
 
@@ -103,10 +91,6 @@ CREATE TABLE `impresoras` (
   `activo` tinyint(1) DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- RELACIONES PARA LA TABLA `impresoras`:
---
-
 -- --------------------------------------------------------
 
 --
@@ -124,22 +108,16 @@ CREATE TABLE `impresora_datos_snmp` (
   `num_serie` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `modelo` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `black_toner` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `black_max_capacity` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `black_max_storage` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `cyan_toner` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `magenta_toner` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `yellow_toner` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `max_capacity` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `max_storage` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   `fuser_status` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `fuser_used` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- RELACIONES PARA LA TABLA `impresora_datos_snmp`:
---   `impresora_id`
---       `impresoras` -> `id`
---
 
 -- --------------------------------------------------------
 
@@ -159,12 +137,6 @@ CREATE TABLE `impresora_historicos` (
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- RELACIONES PARA LA TABLA `impresora_historicos`:
---   `impresora_id`
---       `impresoras` -> `id`
---
-
 -- --------------------------------------------------------
 
 --
@@ -181,10 +153,6 @@ CREATE TABLE `jobs` (
   `available_at` int UNSIGNED NOT NULL,
   `created_at` int UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- RELACIONES PARA LA TABLA `jobs`:
---
 
 -- --------------------------------------------------------
 
@@ -206,10 +174,6 @@ CREATE TABLE `job_batches` (
   `finished_at` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- RELACIONES PARA LA TABLA `job_batches`:
---
-
 -- --------------------------------------------------------
 
 --
@@ -222,10 +186,6 @@ CREATE TABLE `migrations` (
   `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- RELACIONES PARA LA TABLA `migrations`:
---
 
 --
 -- Volcado de datos para la tabla `migrations`
@@ -260,7 +220,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (26, '2025_05_12_122005_add_paginas_bw_and_paginas_color_to_impresora_historicos_table', 23),
 (27, '2025_05_13_131210_add_fuser_to_impresoras_snmp', 24),
 (28, '2025_05_14_101651_add_black_max_capacity', 25),
-(29, '2025_05_14_103041_add_fuser_used', 26);
+(29, '2025_05_14_103041_add_fuser_used', 26),
+(30, '2025_05_14_122810_rename_capacity_to_storage_columns', 27);
 
 -- --------------------------------------------------------
 
@@ -274,10 +235,6 @@ CREATE TABLE `password_reset_tokens` (
   `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- RELACIONES PARA LA TABLA `password_reset_tokens`:
---
 
 -- --------------------------------------------------------
 
@@ -296,16 +253,12 @@ CREATE TABLE `sessions` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- RELACIONES PARA LA TABLA `sessions`:
---
-
---
 -- Volcado de datos para la tabla `sessions`
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
 ('JpMymTjrzMhYhuRwml4aVMPPUkEU25KWgjeaHAit', 2, '10.66.128.154', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiOXN6MHRpZmZjdGdOaDNZaGp0eVIyMWhwQVpGMFFmNUJQcU41NjAzSSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NTc6Imh0dHBzOi8vYWRhY29yc2VydmVyMDEuZHBoYWNvLmNlaC5qdW50YS1hbmRhbHVjaWEuZXMvdGVzdCI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjI7czo0OiJhdXRoIjthOjE6e3M6MjE6InBhc3N3b3JkX2NvbmZpcm1lZF9hdCI7aToxNzQ3MTMxNTk1O319', 1747136898),
-('WUVKp7fQIZYOJcQfYNTWJ0A45jCeDklDwCbK0Nao', 2, '10.66.128.154', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0', 'YTo2OntzOjY6Il90b2tlbiI7czo0MDoiN1pJdnR2dDhNOUpzcG5lNDVkMlNucHRHd3ZJWEYxcUJiSE1SUFRybyI7czozOiJ1cmwiO2E6MDp7fXM6OToiX3ByZXZpb3VzIjthOjE6e3M6MzoidXJsIjtzOjcwOiJodHRwczovL2FkYWNvcnNlcnZlcjAxLmRwaGFjby5jZWguanVudGEtYW5kYWx1Y2lhLmVzL2ltcHJlc29yYXM/cGFnZT0yIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MjtzOjQ6ImF1dGgiO2E6MTp7czoyMToicGFzc3dvcmRfY29uZmlybWVkX2F0IjtpOjE3NDcyMDM0MTc7fX0=', 1747217560);
+('WUVKp7fQIZYOJcQfYNTWJ0A45jCeDklDwCbK0Nao', 2, '10.66.128.154', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0', 'YTo2OntzOjY6Il90b2tlbiI7czo0MDoiN1pJdnR2dDhNOUpzcG5lNDVkMlNucHRHd3ZJWEYxcUJiSE1SUFRybyI7czozOiJ1cmwiO2E6MDp7fXM6OToiX3ByZXZpb3VzIjthOjE6e3M6MzoidXJsIjtzOjYzOiJodHRwczovL2FkYWNvcnNlcnZlcjAxLmRwaGFjby5jZWguanVudGEtYW5kYWx1Y2lhLmVzL2ltcHJlc29yYXMiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToyO3M6NDoiYXV0aCI7YToxOntzOjIxOiJwYXNzd29yZF9jb25maXJtZWRfYXQiO2k6MTc0NzIwMzQxNzt9fQ==', 1747218803);
 
 -- --------------------------------------------------------
 
@@ -324,10 +277,6 @@ CREATE TABLE `users` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- RELACIONES PARA LA TABLA `users`:
---
 
 --
 -- Volcado de datos para la tabla `users`
@@ -458,7 +407,7 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT de la tabla `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT de la tabla `users`
