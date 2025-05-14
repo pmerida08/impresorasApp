@@ -327,18 +327,18 @@ class ImpresoraController extends Controller
         // Validate dates if provided and set up date filtering
         $start_date = null;
         $end_date = null;
-        $range_paginas = null;
+        $range_paginas = 0;
 
         if ($request->filled(['start_date', 'end_date', 'range_paginas'])) {
             $validated = $request->validate([
                 'start_date' => 'required|date',
                 'end_date' => 'required|date|after_or_equal:start_date',
-                'range_paginas' => 'required|integer|min:0|max:1000000',
+                'range_paginas' => 'nullable|integer|min:0|max:1000000',
             ]);
 
             $start_date = Carbon::parse($validated['start_date'])->startOfDay();
             $end_date = Carbon::parse($validated['end_date'])->endOfDay();
-            $range_paginas = $validated['range_paginas'];
+            $range_paginas = $validated['range_paginas'] ?? 0;
         }
 
         // Apply filters if they exist

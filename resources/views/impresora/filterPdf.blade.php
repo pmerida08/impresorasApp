@@ -24,7 +24,7 @@
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="range_paginas" class="form-label">Mínimo de páginas impresas</label>
-                                <input type="number" class="form-control" id="range_paginas" name="range_paginas" min="0" placeholder="Ej: 1000">
+                                <input type="number" class="form-control" id="range_paginas" name="range_paginas" value="0" min="0" placeholder="Ej: 1000">
                                 <small class="form-text text-muted">Mostrar impresoras con al menos este número de páginas en el período</small>
                             </div>
                         </div>
