@@ -123,26 +123,30 @@ class Impresora extends Model
     }
 
     // Métodos personalizado para impresoras Lexmark
-    public function getBlackMaxCapacityAttribute()
+    public function getBlackMaxStorageAttribute()
     {
-        return $this->datosSnmp?->black_max_capacity ?? 'No registrado';
+        return $this->datosSnmp?->black_max_storage ?? 'No registrado';
     }
 
     public function getBlackTonerPercentAttribute()
     {
-        
-        return $this->datosSnmp?->black_toner / $this->datosSnmp?->max_capacity * 100;
+        return $this->datosSnmp?->black_toner / $this->datosSnmp?->max_storage * 100;
     }
 
     public function getFuserStatusAttribute()
     {
         $toners = $this->datosSnmp;
-        return $toners?->fuser_used / $toners?->max_capacity * 100 ?? 'No registrado';
+        return $toners?->fuser_used / $toners?->max_storage * 100 ?? 'No registrado';
     }
 
     public function getFuserUsedAttribute()
     {
         return $this->datosSnmp?->fuser_used ?? 'No registrado';
+    }
+
+    public function getMaxStorageAttribute()
+    {
+        return $this->datosSnmp?->max_storage ?? 'No registrado';
     }
 
     public function showAlert($toner)
