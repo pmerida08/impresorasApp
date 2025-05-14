@@ -92,7 +92,7 @@
                                         </div>
                                     @endif
 
-                                    @if (str_contains($impresora->modelo, 'HP PageWide' || 'Lexmark'))
+                                    @if (str_contains($impresora->modelo,'Lexmark'))
                                         <div class="form-group  mb-2 mt-2">
                                             <strong>Estado del Fusor:</strong>
                                             {{ $impresora->fuser_status . '%' ?? 'Desconocido' }}</span>
