@@ -86,13 +86,23 @@
                                     @else
                                         <div class="toner-pill"
                                             style="background-color: rgba(0, 0, 0, 0.8); width: {{ $impresora->black_toner ?? 0 }}%;">
-                                            Negro: {{ $impresora->max_capacity ?? 0 }}%
+                                            Negro: {{ $impresora->black_toner_percent > 0 ? $impresora->black_toner_percent."%" : 'Estado no disponible' }}
                                             <span
-                                                style="font-weight: bold;">{{ $impresora->showAlert($impresora->max_capacity) }}</span>
+                                                style="font-weight: bold;">{{ $impresora->black_toner_percent > 0 ? $impresora->showAlert($impresora->black_toner_percent) : ''}}</span>
+                                        </div>
+                                    @endif
+
+                                    @if (str_contains($impresora->modelo, 'HP PageWide' || 'Lexmark'))
+                                        <div class="form-group  mb-2 mt-2">
+                                            <strong>Estado del Fusor:</strong>
+                                            {{ $impresora->fuser_status . '%' ?? 'Desconocido' }}</span>
+                                            <span
+                                                style="font-weight: bold;">{{ $impresora->showAlert($impresora->fuser_status) }}</span>
                                         </div>
                                     @endif
                                 </div>
                             </div>
+
                             <div class="float-right">
                                 <a class="btn btn-primary btn-sm"
                                     href="{{ route('impresoras.historico', ['id' => $impresora->id]) }}">

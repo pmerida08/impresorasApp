@@ -20,7 +20,11 @@ class ImpresoraDatosSnmp extends Model
         'cyan_toner',
         'magenta_toner',
         'yellow_toner',
-        'max_capacity'
+        'max_capacity',
+        'fuser_status',
+        'fuser_used',
+        'black_max_capacity',
+
     ];
 
     public function impresora()

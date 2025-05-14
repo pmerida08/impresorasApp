@@ -70,6 +70,9 @@ class ActualizarSnmpImpresoras extends Command
                'magenta_toner' => isset($oids['magentaToner'])? explode(":", snmpget($impresora->ip, $community, $oids['magentaToner']))[1] : 'No registrado',
                'yellow_toner' => isset($oids['yellowToner'])? explode(":", snmpget($impresora->ip, $community, $oids['yellowToner']))[1] : 'No registrado',
                'max_capacity' => isset($oids['maxCapacity'])? explode(":", snmpget($impresora->ip, $community, $oids['maxCapacity']))[1] : 'No registrado',
+               'fuser_status' => isset($oids['fuserStatus'])? explode(":", snmpget($impresora->ip, $community, $oids['fuserStatus']))[1] : 'No registrado',
+               'black_max_capacity' => isset($oids['blackMaxCapacity'])? explode(":", snmpget($impresora->ip, $community, $oids['blackMaxCapacity']))[1] : 'No registrado',
+               'fuser_used' => isset($oids['fuserUsed'])? explode(":", snmpget($impresora->ip, $community, $oids['fuserUsed']))[1] : 'No registrado',
             ];
 
             // Limpiar resultados (quitar "STRING: ..." y comillas dobles)
