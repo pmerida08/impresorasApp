@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 09-05-2025 a las 11:57:34
+-- Tiempo de generación: 14-05-2025 a las 10:14:13
 -- Versión del servidor: 8.0.42-0ubuntu0.24.04.1
 -- Versión de PHP: 8.3.6
 
@@ -124,12 +124,15 @@ CREATE TABLE `impresora_datos_snmp` (
   `num_serie` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `modelo` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `black_toner` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `black_max_capacity` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `cyan_toner` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `magenta_toner` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `yellow_toner` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `max_capacity` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `fuser_status` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `fuser_used` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -150,6 +153,8 @@ CREATE TABLE `impresora_historicos` (
   `impresora_id` bigint UNSIGNED NOT NULL,
   `fecha` date NOT NULL,
   `paginas` int UNSIGNED NOT NULL,
+  `paginas_bw` int DEFAULT NULL,
+  `paginas_color` int DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -251,7 +256,11 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (22, '2025_05_07_082103_add_activo_to_impresora_table', 20),
 (23, '2025_05_08_114856_add_toner_columns_to_impresora_datos_snmp_table', 21),
 (24, '[timestamp]_add_toner_columns_to_impresora_datos_snmp_table', 21),
-(25, '2025_05_08_130113_add_max_capacity_column', 22);
+(25, '2025_05_08_130113_add_max_capacity_column', 22),
+(26, '2025_05_12_122005_add_paginas_bw_and_paginas_color_to_impresora_historicos_table', 23),
+(27, '2025_05_13_131210_add_fuser_to_impresoras_snmp', 24),
+(28, '2025_05_14_101651_add_black_max_capacity', 25),
+(29, '2025_05_14_103041_add_fuser_used', 26);
 
 -- --------------------------------------------------------
 
@@ -295,9 +304,8 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('2XWCvnTgecZFKsLTRGdEIpjB6tU0Ihjmr2yoWlpT', 2, '10.66.128.154', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiNHA5QXk0ejJZaHNmWUlibTVxTGYxVWUxUlBMVFE0RG5yaXB3WmFkQyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NzQ6Imh0dHBzOi8vYWRhY29yc2VydmVyMDEuZHBoYWNvLmNlaC5qdW50YS1hbmRhbHVjaWEuZXMvaW1wcmVzb3Jhcy9wZGYvZmlsdGVyIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MjtzOjQ6ImF1dGgiO2E6MTp7czoyMToicGFzc3dvcmRfY29uZmlybWVkX2F0IjtpOjE3NDY2ODQ1ODI7fX0=', 1746689729),
-('9gG33lYadB1gV7CiKHcpVQLnUynZhcvwk2dN8tH9', 2, '10.66.128.154', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiNHJEME54MmZqMG5EdTdwQUttaTY2aUpZUkRQeEczSTZ2cmVBS2xPaSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NjY6Imh0dHBzOi8vYWRhY29yc2VydmVyMDEuZHBoYWNvLmNlaC5qdW50YS1hbmRhbHVjaWEuZXMvaW1wcmVzb3Jhcy82MyI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjI7czo0OiJhdXRoIjthOjE6e3M6MjE6InBhc3N3b3JkX2NvbmZpcm1lZF9hdCI7aToxNzQ2NzAwMTU5O319', 1746706308),
-('O3ZCRaB1i6H3WdjxWJCnjWqaYNiH9mO6dtfH1RUW', NULL, '10.66.128.154', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiZ0tuQVJiN0ZSMHdpS20zblZjaGhzWXBOM0tvdE1OeFFPM3padkxGNyI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NTg6Imh0dHBzOi8vYWRhY29yc2VydmVyMDEuZHBoYWNvLmNlaC5qdW50YS1hbmRhbHVjaWEuZXMvbG9naW4iO319', 1746790009);
+('JpMymTjrzMhYhuRwml4aVMPPUkEU25KWgjeaHAit', 2, '10.66.128.154', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiOXN6MHRpZmZjdGdOaDNZaGp0eVIyMWhwQVpGMFFmNUJQcU41NjAzSSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NTc6Imh0dHBzOi8vYWRhY29yc2VydmVyMDEuZHBoYWNvLmNlaC5qdW50YS1hbmRhbHVjaWEuZXMvdGVzdCI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjI7czo0OiJhdXRoIjthOjE6e3M6MjE6InBhc3N3b3JkX2NvbmZpcm1lZF9hdCI7aToxNzQ3MTMxNTk1O319', 1747136898),
+('WUVKp7fQIZYOJcQfYNTWJ0A45jCeDklDwCbK0Nao', 2, '10.66.128.154', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0', 'YTo2OntzOjY6Il90b2tlbiI7czo0MDoiN1pJdnR2dDhNOUpzcG5lNDVkMlNucHRHd3ZJWEYxcUJiSE1SUFRybyI7czozOiJ1cmwiO2E6MDp7fXM6OToiX3ByZXZpb3VzIjthOjE6e3M6MzoidXJsIjtzOjcwOiJodHRwczovL2FkYWNvcnNlcnZlcjAxLmRwaGFjby5jZWguanVudGEtYW5kYWx1Y2lhLmVzL2ltcHJlc29yYXM/cGFnZT0yIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MjtzOjQ6ImF1dGgiO2E6MTp7czoyMToicGFzc3dvcmRfY29uZmlybWVkX2F0IjtpOjE3NDcyMDM0MTc7fX0=', 1747217560);
 
 -- --------------------------------------------------------
 
@@ -320,6 +328,14 @@ CREATE TABLE `users` (
 --
 -- RELACIONES PARA LA TABLA `users`:
 --
+
+--
+-- Volcado de datos para la tabla `users`
+--
+
+INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
+(1, 'Pablo', 'pablomerida03@gmail.com', NULL, '$2y$12$mPdPOd4TMsP1Sl8ptuwZyu6rIiEzW6lWKA2wNDvLrGBonWJFuKiTO', NULL, '2025-04-01 08:59:44', '2025-04-01 08:59:44'),
+(2, 'admin', 'admin@gmail.com', NULL, '$2y$12$CH5iJ.mQMAXAonlVj9/b/urV3d90EVjBxzc6cuaUu71lCEHni207a', NULL, '2025-04-21 14:16:07', '2025-04-21 14:16:07');
 
 --
 -- Índices para tablas volcadas
@@ -442,13 +458,13 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT de la tabla `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT de la tabla `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Restricciones para tablas volcadas
@@ -502,6 +518,13 @@ INSERT INTO `pma__table_uiprefs` (`username`, `db_name`, `table_name`, `prefs`, 
 --
 -- Metadatos para la tabla impresora_historicos
 --
+
+--
+-- Volcado de datos para la tabla `pma__table_uiprefs`
+--
+
+INSERT INTO `pma__table_uiprefs` (`username`, `db_name`, `table_name`, `prefs`, `last_update`) VALUES
+('phpmyadmin', 'impresorasproyecto', 'impresora_historicos', '{\"sorted_col\":\"`fecha` DESC\"}', '2025-05-13 07:09:34');
 
 --
 -- Metadatos para la tabla jobs
