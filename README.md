@@ -86,6 +86,7 @@ git clone https://github.com/pmerida08/impresorasCrud.git
 cd impresorasCrud
 
 # Instalar dependencias
+composer update
 composer install
 sudo apt install npm
 npm install
@@ -209,6 +210,7 @@ crontab -e
 ### Entorno de Desarrollo
 1. Instalar las dependencias de desarrollo:
 ```bash
+composer update
 composer install --dev
 npm install
 ```
@@ -255,6 +257,14 @@ php artisan test
 sudo chown -R www-data:www-data storage
 sudo chmod -R 775 storage
 ```
+
+```bash
+# Si hay problemas de instalación del composer
+sudo systemctl install php8.3-fpm
+sudo systemctl restart apache2
+composer update
+composer install
+````
 
 ### Errores SNMP
 - Verificar que el servicio SNMP está activo en las impresoras
