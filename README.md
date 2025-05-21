@@ -272,8 +272,13 @@ php artisan test
 ### Problemas de Permisos
 ```bash
 # Si hay problemas de escritura en storage:
-sudo chown -R www-data:www-data storage
-sudo chmod -R 775 storage
+sudo chmod -R 775 storage bootstrap/cache
+sudo chown -R www-data:www-data storage bootstrap/cache
+php artisan config:clear
+php artisan cache:clear
+php artisan route:clear
+php artisan view:clear
+
 ```
 
 ```bash
