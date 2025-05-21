@@ -216,6 +216,15 @@ crontab -e
 
 ## 🔧 Configuración de Desarrollo
 
+## Problemas de permisos a la hora de crear base de datos en phpmyadmin
+
+```bash
+sudo mysql -u root -p
+CREATE USER 'nombre_usuario'@'localhost' IDENTIFIED BY 'tu_contraseña_segura';
+GRANT ALL PRIVILEGES ON *.* TO 'nombre_usuario'@'localhost' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+```
+
 ### Entorno de Desarrollo
 1. Instalar las dependencias de desarrollo:
 ```bash
