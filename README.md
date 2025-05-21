@@ -76,6 +76,10 @@ sudo apt-get install php-snmp snmp snmpd
 
 ### 2. Instalación de la Aplicación
 ```bash
+# Instalación de Apache y Mysql
+sudo apt install apache2
+sudo apt install mysql-server
+
 # Clonar el repositorio
 cd /var/www/html/
 git clone https://github.com/pmerida08/impresorasCrud.git
@@ -83,7 +87,9 @@ cd impresorasCrud
 
 # Instalar dependencias
 composer install
+sudo apt install npm
 npm install
+npm install vite --save-dev
 npm run build
 
 # Configurar permisos
