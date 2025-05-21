@@ -76,9 +76,11 @@ sudo apt-get install php-snmp snmp snmpd
 
 ### 2. Instalación de la Aplicación
 ```bash
-# Instalación de Apache y Mysql
-sudo apt install apache2
-sudo apt install mysql-server
+# Instalación de Apache, Mysql
+sudo apt install apache2 php php-mysql mysql-server
+
+# Instalación de phpmyadmin (opcional)
+sudo apt install phpmyadmin
 
 # Clonar el repositorio
 cd /var/www/html/
@@ -131,6 +133,13 @@ php artisan migrate
 ```
 
 #### Opción B: Importar la base de datos existente
+
+- Instalar phpmyadmin
+
+```bash
+sudo apt install phpmyadmin
+```
+
 1. Acceder a phpMyAdmin (http://localhost/phpmyadmin o la URL correspondiente)
 2. Crear una nueva base de datos (por ejemplo, "impresoras_db")
 3. Seleccionar la base de datos creada
