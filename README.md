@@ -289,3 +289,5 @@ CREATE USER 'nombre_usuario'@'localhost' IDENTIFIED BY 'tu_contraseña_segura';
 GRANT ALL PRIVILEGES ON *.* TO 'nombre_usuario'@'localhost' WITH GRANT OPTION;
 FLUSH PRIVILEGES;
 ```
+
+_Hay que tener en cuenta que en las tablas que se crean o se importan, que los identificadores (atributo -> id) sean AutoIncrementables_
